@@ -1,0 +1,115 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: auto;
+  padding: 2rem;
+}
+
+.editable {
+  height: 100%;
+  border-bottom: 1px solid;
+  border-color: black;
+}
+
+.editable:focus {
+  height: 100%;
+  border-bottom: 2px solid;
+  border-color: blue;
+}
+
+#main {
+  height: 100vh;
+
+  #dock {
+    font-size: small;
+    position: relative;
+    height: 100%;
+    width: 100%;
+
+    #api-schema-app {
+      position: relative;
+      display: grid;
+      grid-template-columns: 10rem 1fr;
+      height: inherit;
+
+      #side-menu {
+        #file-tree {
+          overflow-y: scroll;
+
+          .treefile:hover {
+            background-color: aqua;
+          }
+
+          .treefolder {
+            .treefolder-title:hover {
+              background-color: aqua;
+            }
+          }
+        }
+      }
+
+      #main-area {
+        position: relative;
+        display: grid;
+        grid-template-rows: 20% 80%;
+
+        #path-table {
+          overflow-y: scroll;
+
+          .path-item {
+            display: grid;
+            grid-template-columns: 1fr 4rem 4rem 4rem 4rem 4rem 4rem;
+          }
+        }
+
+        #operation-sheets {
+          position: relative;
+          display: grid;
+          grid-template-rows: 1.2lh auto;
+
+          #operation-sheet-tabs {
+            display: flex;
+            justify-content: flex-start;
+            background-color: #dadce0;
+
+            .operation-sheet-tab {
+              width: 6em;
+              text-align: center;
+            }
+
+            .operation-sheet-tab:hover {
+              background-color: aqua;
+            }
+
+            .operation-sheet-tab-inactive {
+              border-bottom: 1px solid;
+              border-color: #dadce0;
+            }
+
+            .operation-sheet-tab-active {
+              background-color: white;
+            }
+          }
+
+          #operation-sheet-main {
+            #operation-id {
+              font-size: medium;
+            }
+
+            .region-title {
+              padding-top: 1em;
+              font-size: medium;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+#myconsole {
+  font-size: x-small;
+  background-color: black;
+  color: aliceblue;
+}
