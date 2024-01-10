@@ -1,4 +1,4 @@
-{
+module.exports = {
   "env": {
     "browser": true,
     "es6": true,
@@ -14,8 +14,8 @@
   ],
   "parser": "@typescript-eslint/parser",
   "settings": {
-    "import/resolve": {
-      "webpack": {}
+    "import/resolver": {
+      webpack: { config: path.join(__dirname, 'webpack.main.config.ts') }
     }
   }
 }
