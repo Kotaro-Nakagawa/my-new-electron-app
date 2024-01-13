@@ -1,4 +1,4 @@
-import OpenAPI from "../../structure/openAPI/openAPI"
+import OpenAPI from "@Structure/openAPI/openAPI"
 import MainArea from "./apiSchemaAppParts/mainArea"
 import SideMenu from "./apiSchemaAppParts/sideMenu"
 
