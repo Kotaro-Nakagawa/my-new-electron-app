@@ -17,6 +17,9 @@
       ],
       "@Structure/*": [
         "src/structure/*"
+      ],
+      "@ElementBase/*": [
+        "src/renderer/baseElements/*"
       ]
     }
   },

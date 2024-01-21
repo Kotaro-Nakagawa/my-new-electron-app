@@ -12,7 +12,25 @@ import Reference from "../../../structure/openAPI/openAPIParts/reference";
 import ParameterValues from "./mainAreaParts/operationSheetsParts/operationParts/parametersParts/parameterInterface";
 import SchemaValues from "./mainAreaParts/operationSheetsParts/operationParts/requestBodyParts/parameterInterface";
 import Schema from "../../../structure/openAPI/schema";
+import Info from "@Structure/openAPI/openAPIParts/info";
+import InfoTableInterface from "./mainAreaParts/infoTableInterface";
+import Contact from "@Structure/openAPI/openAPIParts/infoParts/contact";
+import License from "@Structure/openAPI/openAPIParts/infoParts/license";
 
+const intoJsonFromSchema = (info: Info): InfoTableInterface => {
+  const valueConverter = (key: string, value: string | Contact | License): string | InfoTableInterface => {
+    if (typeof value === 'string') {
+      return value
+    }
+    if (typeof value === 'object') {
+      return Object.entries(value).map(([k, v]) => {
+        return { key: k, value: v }
+      })
+    }
+    return 'ERROR'
+  }
+  return Object.entries(info).map(([k, v]) => { return { key: k, value: valueConverter(k, v) } })
+}
 
 const parametersJsonFromSchema = (parameters: (Parameter | Reference)[]): ParameterValues[] => {
   const ret = parameters.map(p => {
@@ -115,6 +133,7 @@ const pathJsonFromSchema = (paths: Paths): PathTableInterface => {
 class ApiSchemaConverter {
   static schemaToViewJson(openAPI: OpenAPI): SchemaViewJson {
     return {
+      info: intoJsonFromSchema(openAPI.info),
       operations: operationsJsonFromSchema(openAPI.paths),
       path: pathJsonFromSchema(openAPI.paths)
     }

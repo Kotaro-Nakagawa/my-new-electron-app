@@ -50,8 +50,6 @@ body {
 
       #main-area {
         position: relative;
-        display: grid;
-        grid-template-rows: 20% 80%;
 
         #path-table {
           overflow-y: scroll;
