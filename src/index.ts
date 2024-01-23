@@ -75,3 +75,12 @@ ipcMain.handle('openYaml', async () => {
 ipcMain.handle('openAPISchema', async () => {
   return APISchemaService.openAPISchema()
 })
+
+ipcMain.handle('openFolder', async () => {
+  return await APISchemaService.openSchemaDirectory()
+})
+
+ipcMain.handle('loadYaml', async (event, path: string) => {
+  console.log(path)
+  return APISchemaService.openAPISchemaOfPath(path)
+})

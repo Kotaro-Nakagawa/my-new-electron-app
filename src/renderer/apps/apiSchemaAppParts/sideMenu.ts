@@ -1,3 +1,6 @@
+import AppDirEnt from "@Structure/fileSysstem/dirEnt"
+import FileTree from "./sideMenuParts/fileTree"
+
 const elementId = 'side-menu'
 
 const element = () => {
@@ -7,12 +10,20 @@ const element = () => {
 }
 
 class SideMenu {
+  #fileTree
+  #onFileSelect
   #element
-  constructor() {
+  constructor(onFileSelect: (path: string) => void) {
+    this.#onFileSelect = onFileSelect
+    this.#fileTree = new FileTree((path) => { this.#onFileSelect(path) })
     this.#element = element()
+    this.#element.appendChild(this.#fileTree.element)
   }
   get element() {
     return this.#element
+  }
+  loadData(data: AppDirEnt) {
+    this.#fileTree.loadTree(data)
   }
 }
 

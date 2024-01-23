@@ -18,6 +18,18 @@ class FileDialogue {
     );
     return result
   }
+
+  static async openDirectory() {
+    const win = BrowserWindow.getFocusedWindow();
+
+    const result = await dialog.showOpenDialog(
+      win,
+      {
+        properties: ["openDirectory"]
+      }
+    );
+    return result
+  }
 }
 
 export default FileDialogue

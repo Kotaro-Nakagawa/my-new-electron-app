@@ -1,6 +1,8 @@
 import OpenAPI from "@Structure/openAPI/openAPI"
 import MainArea from "./apiSchemaAppParts/mainArea"
 import SideMenu from "./apiSchemaAppParts/sideMenu"
+import AppDirEnt from "@Structure/fileSysstem/dirEnt"
+import { IAPISchemaService } from "../../types/process/app"
 
 const elementId = 'api-schema-app'
 
@@ -13,10 +15,12 @@ const element = () => {
 class ApiSchemaApp {
   #sideMenu
   #mainArea
+  #service
 
   #element
-  constructor() {
-    this.#sideMenu = new SideMenu()
+  constructor(service: IAPISchemaService) {
+    this.#service = service
+    this.#sideMenu = new SideMenu((path => { this.#fetchSchemaFromServer(path) }))
     this.#mainArea = new MainArea()
 
     this.#element = element()
@@ -26,8 +30,16 @@ class ApiSchemaApp {
   get element() {
     return this.#element
   }
+  async #fetchSchemaFromServer(path: string) {
+    const fetched = await this.#service.loadYaml(path)
+    if (fetched === '') return
+    this.loadData(fetched)
+  }
   loadData(apiSchema: OpenAPI) {
     this.#mainArea.loadData(apiSchema)
+  }
+  loadDirTree(dirent: AppDirEnt) {
+    this.#sideMenu.loadData(dirent)
   }
 }
 

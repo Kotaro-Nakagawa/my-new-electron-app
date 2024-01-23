@@ -34,7 +34,7 @@ console.log('👋 This message is being logged by "renderer.js", included via we
 
 window.onload = () => {
   // const mainApp = new ApiSchemaApp()
-  const mainApp = new Dock()
+  const mainApp = new Dock(window.APISchemaService)
   const mainElement = document.getElementById('main')
   mainElement.appendChild(mainApp.element)
   const devElement = document.getElementById('develop')
@@ -56,8 +56,13 @@ window.onload = () => {
     mainApp.loadAPISchema(fileText)
   }
   openButton.innerText = 'ファイルを開く'
+  const dirOpenButton = document.createElement('div')
+  devElement.appendChild(dirOpenButton)
+  dirOpenButton.innerText = 'フォルダを開く'
+  dirOpenButton.onclick = async () => {
+    const fileTree = await window.app.openYamlDir()
+    if (fileTree === "") return
+    customLog.innerText = JSON.stringify(fileTree, undefined, 4)
+    mainApp.loadDirectoryTree(fileTree)
+  }
 }
-
-
-
-

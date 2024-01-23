@@ -1,5 +1,7 @@
+import AppDirEnt from "@Structure/fileSysstem/dirEnt"
 import OpenAPI from "../structure/openAPI/openAPI"
 import ApiSchemaApp from "./apps/apiSchemaApp"
+import { IAPISchemaService } from "../types/process/app"
 
 const elementId = 'dock'
 
@@ -13,8 +15,8 @@ class Dock {
   #apiSchemaApp
   #element
 
-  constructor() {
-    this.#apiSchemaApp = new ApiSchemaApp()
+  constructor(services: IAPISchemaService) {
+    this.#apiSchemaApp = new ApiSchemaApp(services)
     this.#element = element()
     this.#element.appendChild(this.#apiSchemaApp.element)
   }
@@ -25,6 +27,10 @@ class Dock {
 
   loadAPISchema(data: OpenAPI) {
     this.#apiSchemaApp.loadData(data)
+  }
+
+  loadDirectoryTree(data: AppDirEnt) {
+    this.#apiSchemaApp.loadDirTree(data)
   }
 }
 
