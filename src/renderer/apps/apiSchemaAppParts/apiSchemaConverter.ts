@@ -75,8 +75,8 @@ const requestBodyJsonFromSchema = (body: RequestBody | Reference): SchemaValues 
       example: schema.examples ? schema.examples.join('\n') : '',
       children: (() => {
         if (schema.properties) {
-          return Array.from(schema.properties.entries()).map(([k, v]) => {
-            return schemaValuesFromSchema(k, v, schema.required.includes(k))
+          return Array.from(Object.entries(schema.properties)).map(([k, v]) => {
+            return schemaValuesFromSchema(k, v, schema.required ? schema.required.includes(k) : false)
           })
         }
         if (schema.items) {
