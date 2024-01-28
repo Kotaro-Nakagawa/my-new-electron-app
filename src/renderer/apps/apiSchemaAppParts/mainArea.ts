@@ -13,20 +13,13 @@ const element = () => {
 }
 
 class MainArea {
-  #infoTable
-  #pathLists
-  #operationSheets
+  #infoTable: InfoTable
+  #pathLists: PathTable
+  #operationSheets: OperationSheets
 
   #element
   constructor() {
-    this.#infoTable = new InfoTable()
-    this.#pathLists = new PathTable()
-    this.#operationSheets = new OperationSheets()
-
     this.#element = element()
-    this.#element.appendChild(this.#infoTable.element)
-    this.#element.appendChild(this.#pathLists.element)
-    this.#element.appendChild(this.#operationSheets.element)
   }
   get element() {
     return this.#element
@@ -34,9 +27,18 @@ class MainArea {
 
   loadData(apiSchema: OpenAPI) {
     const { info, path, operations } = ApiSchemaConverter.schemaToViewJson(apiSchema)
-    this.#infoTable.loadData(info)
+    this.#infoTable = new InfoTable(info)
+    this.#pathLists = new PathTable()
+    this.#operationSheets = new OperationSheets()
+
     this.#pathLists.loadData(path, (v: string) => { this.#operationSheets.updatePathValue(v, undefined) })
     this.#operationSheets.loadData(operations)
+
+    this.#element.innerHTML = ''
+    this.#element.appendChild(this.#infoTable.element)
+    this.#element.appendChild(this.#pathLists.element)
+    this.#element.appendChild(this.#operationSheets.element)
+
   }
 }
 
