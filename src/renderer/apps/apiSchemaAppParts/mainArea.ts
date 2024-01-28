@@ -1,8 +1,10 @@
+import AppDirEnt from "@Structure/fileSysstem/dirEnt"
 import OpenAPI from "../../../structure/openAPI/openAPI"
 import ApiSchemaConverter from "./apiSchemaConverter"
 import InfoTable from "./mainAreaParts/infoTable"
 import OperationSheets from "./mainAreaParts/operationSheets"
 import PathTable from "./mainAreaParts/pathTable"
+import StartPage from "./mainAreaParts/startPage"
 
 const elementId = 'main-area'
 
@@ -13,13 +15,16 @@ const element = () => {
 }
 
 class MainArea {
+  #startPage: StartPage
   #infoTable: InfoTable
   #pathLists: PathTable
   #operationSheets: OperationSheets
 
   #element
-  constructor() {
+  constructor(onFolderOpenButtonClick: () => Promise<void>) {
     this.#element = element()
+    this.#startPage = new StartPage(onFolderOpenButtonClick)
+    this.#element.appendChild(this.#startPage.element)
   }
   get element() {
     return this.#element
