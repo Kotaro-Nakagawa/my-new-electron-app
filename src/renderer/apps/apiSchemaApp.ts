@@ -21,7 +21,12 @@ class ApiSchemaApp {
   constructor(service: IAPISchemaService) {
     this.#service = service
     this.#sideMenu = new SideMenu((path => { this.#fetchSchemaFromServer(path) }))
-    this.#mainArea = new MainArea()
+    this.#mainArea = new MainArea(async () => {
+      const result = await service.openYamlDir()
+      if (result !== '') {
+        this.loadDirTree(result)
+      }
+    })
 
     this.#element = element()
     this.#element.appendChild(this.#sideMenu.element)

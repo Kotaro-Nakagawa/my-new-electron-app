@@ -19,10 +19,11 @@ contextBridge.exposeInMainWorld(
 })
 
 contextBridge.exposeInMainWorld(
-  'APISchemaService',
-  {
-    loadYaml: async (path: string): Promise<string> => {
-      return await ipcRenderer.invoke('loadYaml', path);
-    }
+  'APISchemaService', {
+  loadYaml: async (path: string): Promise<string> => {
+    return await ipcRenderer.invoke('loadYaml', path);
+  },
+  openYamlDir: async (): Promise<string> => {
+    return await ipcRenderer.invoke('openFolder');
   }
-)
+})
