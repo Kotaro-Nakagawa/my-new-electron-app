@@ -1,3 +1,4 @@
+import AppElement from "@ElementBase/element"
 import OperationSheetsData from "./operationSheetsInterface"
 import OperationSheetMain from "./operationSheetsParts/operationSheetMain"
 import OperationSheetTabs from "./operationSheetsParts/operationSheetTabs"
@@ -10,27 +11,23 @@ const element = () => {
   return ret
 }
 
-class OperationSheets {
+class OperationSheets extends AppElement {
   #tabs
   #currentPathIndex
   #currentMethod
   #operation
   #data: OperationSheetsData
 
-  #element
   constructor() {
+    super(element())
     this.#currentPathIndex = 0
     this.#currentMethod = 'get'
     this.#tabs = new OperationSheetTabs((method) => {
       this.changeCurrentMethod(method)
     })
     this.#operation = new OperationSheetMain()
-    this.#element = element()
-    this.#element.appendChild(this.#tabs.element)
-    this.#element.appendChild(this.#operation.element)
-  }
-  get element() {
-    return this.#element
+    this.element.appendChild(this.#tabs.element)
+    this.element.appendChild(this.#operation.element)
   }
   loadData(data: OperationSheetsData) {
     this.#data = data
