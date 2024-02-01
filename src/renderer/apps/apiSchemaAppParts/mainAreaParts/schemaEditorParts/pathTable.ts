@@ -1,3 +1,4 @@
+import AppElement from "@ElementBase/element"
 import PathTableInterface from "./pathTableInterface"
 import Header from "./pathTableParts/header"
 import PathList from "./pathTableParts/pathList"
@@ -10,22 +11,17 @@ const element = () => {
   return ret
 }
 
-class PathTable {
+class PathTable extends AppElement {
   #header
   #list
 
-  #element
   constructor() {
+    super(element())
     this.#header = new Header()
     this.#list = new PathList()
 
-    this.#element = element()
-    this.#element.appendChild(this.#header.element)
-    this.#element.appendChild(this.#list.element)
-  }
-
-  get element() {
-    return this.#element
+    this.element.appendChild(this.#header.element)
+    this.element.appendChild(this.#list.element)
   }
 
   loadData(data: PathTableInterface, onPathUpdates: ((newValue: string, index: number) => void)) {

@@ -1,9 +1,6 @@
-import AppDirEnt from "@Structure/fileSysstem/dirEnt"
 import OpenAPI from "../../../structure/openAPI/openAPI"
-import ApiSchemaConverter from "./apiSchemaConverter"
-import InfoTable from "./mainAreaParts/infoTable"
-import OperationSheets from "./mainAreaParts/operationSheets"
-import PathTable from "./mainAreaParts/pathTable"
+import ApiSchemaConverter from "./mainAreaParts/apiSchemaConverter"
+import SchemaEditor from "./mainAreaParts/schemaEditor"
 import StartPage from "./mainAreaParts/startPage"
 
 const elementId = 'main-area'
@@ -16,9 +13,7 @@ const element = () => {
 
 class MainArea {
   #startPage: StartPage
-  #infoTable: InfoTable
-  #pathLists: PathTable
-  #operationSheets: OperationSheets
+  #schemaEditor: SchemaEditor
 
   #element
   constructor(onFolderOpenButtonClick: () => Promise<void>) {
@@ -31,19 +26,9 @@ class MainArea {
   }
 
   loadData(apiSchema: OpenAPI) {
-    const { info, path, operations } = ApiSchemaConverter.schemaToViewJson(apiSchema)
-    this.#infoTable = new InfoTable(info)
-    this.#pathLists = new PathTable()
-    this.#operationSheets = new OperationSheets()
-
-    this.#pathLists.loadData(path, (v: string) => { this.#operationSheets.updatePathValue(v, undefined) })
-    this.#operationSheets.loadData(operations)
-
+    this.#schemaEditor = new SchemaEditor(apiSchema)
     this.#element.innerHTML = ''
-    this.#element.appendChild(this.#infoTable.element)
-    this.#element.appendChild(this.#pathLists.element)
-    this.#element.appendChild(this.#operationSheets.element)
-
+    this.#element.appendChild(this.#schemaEditor.element)
   }
 }
 
