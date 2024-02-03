@@ -9,7 +9,9 @@ const titleElement = (value: string) => {
 }
 
 const mainElement = () => {
-  return document.createElement(DIV)
+  const elem = document.createElement(DIV)
+  elem.style.paddingLeft = "5%"
+  return elem
 }
 
 const baseElement = () => {
