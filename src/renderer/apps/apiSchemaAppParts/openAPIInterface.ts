@@ -1,6 +1,6 @@
-import InfoTableInterface from "./mainAreaParts/infoTableInterface"
-import OperationSheetsData from "./mainAreaParts/operationSheetsInterface"
-import PathTableInterface from "./mainAreaParts/pathTableInterface"
+import InfoTableInterface from "./mainAreaParts/schemaEditorParts/infoTableInterface"
+import OperationSheetsData from "./mainAreaParts/schemaEditorParts/operationSheetsInterface"
+import PathTableInterface from "./mainAreaParts/schemaEditorParts/pathTableInterface"
 
 interface SchemaViewJson {
   info: InfoTableInterface
