@@ -26,6 +26,10 @@ class KeyValueList extends AppElement {
   value() {
     return this.#keyValueList.map(kv => kv.value)
   }
+  clear() {
+    this.#keyValueList = []
+    this.element.innerHTML = ''
+  }
 }
 
 export default KeyValueList

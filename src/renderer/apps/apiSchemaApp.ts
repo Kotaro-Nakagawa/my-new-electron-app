@@ -20,7 +20,7 @@ class ApiSchemaApp {
   #element
   constructor(service: IAPISchemaService) {
     this.#service = service
-    this.#sideMenu = new SideMenu((path => { this.#fetchSchemaFromServer(path) }))
+    this.#sideMenu = new SideMenu((path => { this.#fetchSchemaFromServer(path) }), (path: string) => { this.loadNewSchemaPage(path) })
     this.#mainArea = new MainArea(async () => {
       const result = await service.openYamlDir()
       if (result !== '') {
@@ -45,6 +45,9 @@ class ApiSchemaApp {
   }
   loadDirTree(dirent: AppDirEnt) {
     this.#sideMenu.loadData(dirent)
+  }
+  loadNewSchemaPage(filePath: string) {
+    this.#mainArea.loadNewSchemaPage(filePath)
   }
 }
 
