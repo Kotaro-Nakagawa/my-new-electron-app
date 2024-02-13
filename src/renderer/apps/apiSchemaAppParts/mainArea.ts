@@ -33,8 +33,9 @@ class MainArea {
     this.#element.appendChild(this.#schemaEditor.element)
   }
 
-  loadNewSchemaPage(filePath: string) {
-    this.#newSchemaMaker = new NewSchemaMaker(filePath)
+  loadNewSchemaPage(filePath: string, createFile: (dirPath: string, fileName: string, data: OpenAPI) => Promise<string>, saveFile: (path: string, data: OpenAPI) => void) {
+    // save したあと tree の再ロードが必要？
+    this.#newSchemaMaker = new NewSchemaMaker(filePath, createFile, saveFile)
     this.#element.innerHTML = ''
     this.#element.appendChild(this.#newSchemaMaker.element)
   }

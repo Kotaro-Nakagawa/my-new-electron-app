@@ -1,5 +1,6 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
+import OpenAPI from '@Structure/openAPI/openAPI';
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld(
@@ -25,5 +26,11 @@ contextBridge.exposeInMainWorld(
   },
   openYamlDir: async (): Promise<string> => {
     return await ipcRenderer.invoke('openFolder');
+  },
+  saveYaml: async (path: string, data: OpenAPI) => {
+    return await ipcRenderer.invoke('saveYaml', path, data)
+  },
+  createYaml: async (path: string, fileName: string, data: OpenAPI): Promise<string> => {
+    return await ipcRenderer.invoke('createYaml', path, fileName, data)
   }
 })

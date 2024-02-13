@@ -18,7 +18,7 @@ interface OpenAPI {
   components?: Components
   security?: SecurityRequirement
   tags?: Tag[]
-  externalDocs: ExternalDocumentation
+  externalDocs?: ExternalDocumentation
 }
 
 export default OpenAPI

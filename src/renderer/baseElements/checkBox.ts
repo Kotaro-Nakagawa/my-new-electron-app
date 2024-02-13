@@ -1,7 +1,7 @@
 import AppElement from "./element";
 
 const DIV = 'div'
-const MARK_EMPTY = '　'
+const MARK_EMPTY = '☐'
 const MARK_CHECKED = '✓'
 
 const markElement = () => {

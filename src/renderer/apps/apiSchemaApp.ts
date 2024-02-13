@@ -47,7 +47,7 @@ class ApiSchemaApp {
     this.#sideMenu.loadData(dirent)
   }
   loadNewSchemaPage(filePath: string) {
-    this.#mainArea.loadNewSchemaPage(filePath)
+    this.#mainArea.loadNewSchemaPage(filePath, this.#service.createYaml, this.#service.saveYaml)
   }
 }
 

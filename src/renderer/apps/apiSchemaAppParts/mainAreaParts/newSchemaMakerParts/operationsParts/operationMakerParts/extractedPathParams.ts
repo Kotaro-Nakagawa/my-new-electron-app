@@ -6,10 +6,11 @@ import AppTextBox from "@ElementBase/textbox";
 class ExtractedPathParams extends KeyValueList {
   constructor() {
     super()
+    this.element.id = 'pathParams'
   }
-  loadData(samples: [string, string][]) {
+  putData(samples: { paramName: string, value: string }[]) {
     this.clear()
-    this.pushMany(samples.map(s => new KeyValueRecord(new AppLabel(s[0]), new AppTextBox(s[1]))))
+    this.pushMany(samples.map(s => new KeyValueRecord(new AppLabel(s.paramName), new AppTextBox(s.value))))
   }
 }
 

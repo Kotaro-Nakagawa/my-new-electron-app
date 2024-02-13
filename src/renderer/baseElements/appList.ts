@@ -12,10 +12,14 @@ const baseElement = () => {
   return elem
 }
 
-class ListElement<T extends AppElement> extends AppElement {
+class AppList<T extends AppElement> extends AppElement {
+  protected contents: T[]
+  protected suffix: AppElement
   #mainElement
   constructor(items: T[], suffix?: AppElement) {
     super(baseElement())
+    this.contents = items
+    this.suffix = suffix
     this.#mainElement = mainElement()
     this.element.appendChild(this.#mainElement)
     items.forEach(i => { this.#mainElement.appendChild(i.element) })
@@ -29,4 +33,4 @@ class ListElement<T extends AppElement> extends AppElement {
   }
 }
 
-export default ListElement
+export default AppList

@@ -11,6 +11,13 @@ class FileManager {
       console.log(e);
     }
   }
+  static saveFile(path: string, data: string) {
+    try {
+      fs.writeFileSync(path, data);
+    } catch (e) {
+      console.log(e)
+    }
+  }
 }
 
 export default FileManager

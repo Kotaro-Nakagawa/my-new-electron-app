@@ -4,6 +4,7 @@ import FileDialogue from "../ioUtil/fileDialogue"
 import FileManager from "../ioUtil/fileManager"
 import yaml from 'js-yaml'
 import DirTree from "../ioUtil/dirTree"
+import path from "path"
 
 class APISchemaService {
   static async openAPISchema(): Promise<(OpenAPI | "")> {
@@ -23,6 +24,18 @@ class APISchemaService {
     const openApi = yaml.load(FileManager.readFile(path))
     const model: OpenAPI = openApi as OpenAPI
     return model
+  }
+
+  static async saveAPISchemaToPath(path: string, data: OpenAPI) {
+    const apiStr = yaml.dump(data)
+    FileManager.saveFile(path, apiStr)
+  }
+
+  static async createNewAPISchemaFile(dirPath: string, fileName: string, data: OpenAPI): Promise<string> {
+    const apiStr = yaml.dump(data)
+    const filePath = path.join(dirPath, fileName.endsWith('.yaml') ? fileName : `${fileName}.yaml`)
+    FileManager.saveFile(filePath, apiStr)
+    return filePath
   }
 }
 

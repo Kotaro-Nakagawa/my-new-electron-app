@@ -4,6 +4,7 @@ const DIV = 'div'
 
 const baseElement = () => {
   const elem = document.createElement(DIV)
+  elem.style.display = 'flex'
   return elem
 }
 

@@ -17,5 +17,7 @@ export interface IMainProcess {
 
 export interface IAPISchemaService {
   loadYaml: (path: string) => Promise<OpenAPI | "">;
-  openYamlDir: () => Promise<AppDirEnt | "">
+  openYamlDir: () => Promise<AppDirEnt | "">;
+  saveYaml: (path: string, data: OpenAPI) => Promise<>;
+  createYaml: (path: string, fileName: string, data: OpenAPI) => Promise<string>
 }
