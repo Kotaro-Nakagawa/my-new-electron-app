@@ -3,20 +3,19 @@ import MethodCheckList from "./infoMethodSetParts/methodCheckList";
 import PathTextBox from "./infoMethodSetParts/pathTextBox";
 
 class PathMethodSet extends AppVStack<[PathTextBox, MethodCheckList]> {
-  #pathTextBox
-  #methodCheckList
   constructor() {
-    const pathTextBox = new PathTextBox(() => { })
-    const methodCheckList = new MethodCheckList()
     super([
-      pathTextBox, methodCheckList
+      new PathTextBox(() => { }), new MethodCheckList()
     ])
-    this.#pathTextBox = pathTextBox
-    this.#methodCheckList = methodCheckList
   }
   get value() {
-    // return this.#methodCheckList.value.map(m => { return { method: m, path: this.#pathTextBox.value } })
-    return { path: this.#pathTextBox.value, methods: this.#methodCheckList.value }
+    return { path: this.pathTextBox.value, methods: this.methodCheckList.value }
+  }
+  get pathTextBox(): PathTextBox {
+    return this.contents[0]
+  }
+  get methodCheckList(): MethodCheckList {
+    return this.contents[1]
   }
 }
 
