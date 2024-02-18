@@ -1,5 +1,5 @@
 import AppVStack from "@ElementBase/vStack";
-import PathSampleBox from "./operationMakerParts/pathSampleBox";
+import PathSampleSection from "./operationMakerParts/pathSampleBox";
 import ExtractedPathParams from "./operationMakerParts/extractedPathParams";
 import ExtractedQueryParams from "./operationMakerParts/extractedQueryParams";
 import BodySampleBox from "./operationMakerParts/bodySampleBox";
@@ -22,14 +22,14 @@ class Buttons extends AppElement {
   }
 }
 
-class OperationMaker extends AppVStack<[PathSampleBox, ExtractedPathParams, ExtractedQueryParams, BodySampleBox, Buttons]> {
+class OperationMaker extends AppVStack<[PathSampleSection, ExtractedPathParams, ExtractedQueryParams, BodySampleBox, Buttons]> {
   static PATH_PARAMS = 1
   static QUERY_PARAMS = 2
   #path: string
   #method: method
   constructor(path: string, method: method, nextButton: AppButton, backButton: AppButton) {
     super([
-      new PathSampleBox((path) => { this.#extractParams(path) }),
+      new PathSampleSection((path) => { this.#extractParams(path) }),
       new ExtractedPathParams(),
       new ExtractedQueryParams(),
       new BodySampleBox(),

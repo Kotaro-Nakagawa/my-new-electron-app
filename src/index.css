@@ -17,6 +17,15 @@ body {
   border-color: blue;
 }
 
+div.alert {
+  background-color: #FFEFEF;
+  color: #C25338;
+}
+
+div.alert::before {
+  content: "\02715";
+}
+
 #main {
   height: 100vh;
 

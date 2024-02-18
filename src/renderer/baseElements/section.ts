@@ -6,6 +6,7 @@ const titleElement = (title: string) => {
   const elem = document.createElement(DIV)
   elem.style.fontSize = 'medium'
   elem.style.paddingTop = '1em'
+  elem.innerText = title
   return elem
 }
 
@@ -19,11 +20,13 @@ const baseElement = () => {
   return elem
 }
 
-class AppSection extends AppElement {
+class AppSection<T extends AppElement> extends AppElement {
+  protected content: T
   #titleElement
   #mainElement
-  constructor(title: string, content: AppElement) {
+  constructor(title: string, content: T) {
     super(baseElement())
+    this.content = content
     this.#titleElement = titleElement(title)
     this.#mainElement = mainElement()
     this.element.appendChild(this.#titleElement)

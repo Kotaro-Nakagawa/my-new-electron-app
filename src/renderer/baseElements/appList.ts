@@ -29,7 +29,7 @@ class AppList<T extends AppElement> extends AppElement {
   }
 
   push(newItem: T) {
-
+    this.contents.push(newItem)
   }
 }
 

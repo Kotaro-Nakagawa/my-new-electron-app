@@ -3,6 +3,7 @@ import AppVStack from "@ElementBase/vStack";
 import PathMethodSet from "./infoMethodPathParts/pathMethodSet";
 import AppButton from "@ElementBase/button";
 import AppTextBox from "@ElementBase/textbox";
+import AppSection from "@ElementBase/section";
 
 class InfoBox extends AppTextBox {
   constructor() {
@@ -20,12 +21,23 @@ class PathMethodList extends AppList<PathMethodSet> {
   constructor(button: PathMethodAddButton) {
     super([new PathMethodSet()], button)
   }
-  override push(newItem: PathMethodSet): void {
-    this.contents.push(newItem)
-    super.push(newItem)
-  }
   get value() {
     return this.contents.flatMap(c => c.value)
+  }
+}
+
+class PathMethodSection extends AppSection<PathMethodList> {
+  constructor(button: PathMethodAddButton) {
+    super(
+      'path と method のリスト',
+      new PathMethodList(button)
+    )
+  }
+  push(newItem: PathMethodSet): void {
+    this.content.push(newItem)
+  }
+  get value() {
+    return this.content.value
   }
 }
 
@@ -35,14 +47,14 @@ class NextButton extends AppButton {
   }
 }
 
-class InfoMethodPath extends AppVStack<[InfoBox, PathMethodList, NextButton]> {
+class InfoMethodPath extends AppVStack<[InfoBox, PathMethodSection, NextButton]> {
   static INFO_BOX = 0
   static LIST = 1
   static NEXT_BUTTON = 2
   constructor(onGoNext: () => void) {
     super([
       new InfoBox(),
-      new PathMethodList(new PathMethodAddButton(() => { this.list.push(new PathMethodSet()) })),
+      new PathMethodSection(new PathMethodAddButton(() => { this.list.push(new PathMethodSet()) })),
       new NextButton(onGoNext)
     ])
   }
@@ -52,8 +64,8 @@ class InfoMethodPath extends AppVStack<[InfoBox, PathMethodList, NextButton]> {
   get infoValue() {
     return this.infoBox.value
   }
-  get list(): PathMethodList {
-    return this.contents[InfoMethodPath.LIST] as PathMethodList
+  get list(): PathMethodSection {
+    return this.contents[InfoMethodPath.LIST] as PathMethodSection
   }
   get value() {
     return this.list.value

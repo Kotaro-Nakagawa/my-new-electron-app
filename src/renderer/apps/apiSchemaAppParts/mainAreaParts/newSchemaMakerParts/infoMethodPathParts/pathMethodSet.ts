@@ -6,7 +6,7 @@ class PathMethodSet extends AppVStack<[PathTextBox, MethodCheckList]> {
   #pathTextBox
   #methodCheckList
   constructor() {
-    const pathTextBox = new PathTextBox()
+    const pathTextBox = new PathTextBox(() => { })
     const methodCheckList = new MethodCheckList()
     super([
       pathTextBox, methodCheckList
