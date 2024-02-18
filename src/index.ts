@@ -95,3 +95,8 @@ ipcMain.handle('createYaml', async (event, path: string, fileName: string, data:
   console.log(`creating YAML on ${path}`)
   return APISchemaService.createNewAPISchemaFile(path, fileName, data)
 })
+
+ipcMain.handle('reloadFolder', async () => {
+  console.log(`reloading Folder ${APISchemaService.currentFolder}`)
+  return APISchemaService.reloadDirTree()
+})

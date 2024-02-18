@@ -32,5 +32,8 @@ contextBridge.exposeInMainWorld(
   },
   createYaml: async (path: string, fileName: string, data: OpenAPI): Promise<string> => {
     return await ipcRenderer.invoke('createYaml', path, fileName, data)
+  },
+  reloadFolder: async (): Promise<string> => {
+    return await ipcRenderer.invoke('reloadFolder')
   }
 })

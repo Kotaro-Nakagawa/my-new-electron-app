@@ -7,6 +7,7 @@ import DirTree from "../ioUtil/dirTree"
 import path from "path"
 
 class APISchemaService {
+  static currentFolder: string
   static async openAPISchema(): Promise<(OpenAPI | "")> {
     const openResult = await FileDialogue.openFile(['yaml'])
     if (openResult.filePaths.length === 0) return ''
@@ -17,6 +18,7 @@ class APISchemaService {
   static async openSchemaDirectory(): Promise<AppDirEnt | ""> {
     const openResult = await FileDialogue.openDirectory()
     if (openResult.filePaths.length === 0) return ''
+    APISchemaService.currentFolder = openResult.filePaths[0]
     return DirTree.from(openResult.filePaths[0])
   }
 
@@ -36,6 +38,13 @@ class APISchemaService {
     const filePath = path.join(dirPath, fileName.endsWith('.yaml') ? fileName : `${fileName}.yaml`)
     FileManager.saveFile(filePath, apiStr)
     return filePath
+  }
+
+  static async reloadDirTree() {
+    const currentFolder = APISchemaService.currentFolder
+    if (!currentFolder) return ''
+    APISchemaService.currentFolder = currentFolder
+    return DirTree.from(currentFolder)
   }
 }
 
