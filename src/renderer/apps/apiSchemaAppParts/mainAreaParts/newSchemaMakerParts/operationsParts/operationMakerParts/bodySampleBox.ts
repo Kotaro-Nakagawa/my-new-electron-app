@@ -1,3 +1,4 @@
+import AppSection from "@ElementBase/section";
 import AppTextBox from "@ElementBase/textbox";
 
 class BodySampleBox extends AppTextBox {
@@ -6,4 +7,10 @@ class BodySampleBox extends AppTextBox {
   }
 }
 
-export default BodySampleBox
+class BodySampleSection extends AppSection<BodySampleBox>{
+  constructor() {
+    super('Request Body', new BodySampleBox())
+  }
+}
+
+export default BodySampleSection

@@ -3,6 +3,7 @@ import PathSampleSection from "./operationMakerParts/pathSampleBox";
 import ExtractedPathParams from "./operationMakerParts/extractedPathParams";
 import ExtractedQueryParams from "./operationMakerParts/extractedQueryParams";
 import BodySampleBox from "./operationMakerParts/bodySampleBox";
+import ResponseSampleSection from "./operationMakerParts/responseSampleBox";
 import AppButton from "@ElementBase/button";
 import Operation from "@Structure/openAPI/openAPIParts/pathitemParts/operation";
 import Parameter from "@Structure/openAPI/openAPIParts/pathitemParts/parameter";
@@ -22,7 +23,7 @@ class Buttons extends AppElement {
   }
 }
 
-class OperationMaker extends AppVStack<[PathSampleSection, ExtractedPathParams, ExtractedQueryParams, BodySampleBox, Buttons]> {
+class OperationMaker extends AppVStack<[PathSampleSection, ExtractedPathParams, ExtractedQueryParams, BodySampleBox, ResponseSampleSection, Buttons]> {
   static PATH_PARAMS = 1
   static QUERY_PARAMS = 2
   #path: string
@@ -33,6 +34,7 @@ class OperationMaker extends AppVStack<[PathSampleSection, ExtractedPathParams, 
       new ExtractedPathParams(),
       new ExtractedQueryParams(),
       new BodySampleBox(),
+      new ResponseSampleSection(),
       new Buttons(backButton, nextButton)
     ])
     this.#path = path
