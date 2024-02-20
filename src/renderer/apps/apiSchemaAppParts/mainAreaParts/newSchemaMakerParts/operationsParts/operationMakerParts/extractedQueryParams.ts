@@ -1,6 +1,7 @@
 import KeyValueList from "@ElementBase/foldableKeyValueParts/keyValueList";
 import KeyValueRecord from "@ElementBase/foldableKeyValueParts/keyValueRecord";
 import AppLabel from "@ElementBase/label";
+import AppSection from "@ElementBase/section";
 import AppTextBox from "@ElementBase/textbox";
 
 class QueryParamName extends AppLabel {
@@ -33,4 +34,16 @@ class ExtractedQueryParams extends KeyValueList {
   }
 }
 
-export default ExtractedQueryParams
+class QueryParamSection extends AppSection<ExtractedQueryParams> {
+  constructor() {
+    super('QueryParameter', new ExtractedQueryParams())
+  }
+  putData(queries: { paramName: string, value: string }[]) {
+    this.content.putData(queries)
+  }
+  get value() {
+    return this.content.value
+  }
+}
+
+export default QueryParamSection
