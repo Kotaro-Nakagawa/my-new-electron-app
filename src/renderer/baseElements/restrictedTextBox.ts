@@ -26,7 +26,7 @@ class AppRestrictedTextBox extends AppElement {
     this.#alertLabelElement = alertLabelElement()
     this.element.appendChild(this.#alertLabelElement)
     this.element.oninput = () => {
-      const validateResult = this.#validation(this.element.innerText)
+      const validateResult = this.#validation(this.textBox.element.innerText)
       this.#alertLabelElement.innerText = validateResult.message
       validateResult.isValid ? this.toAcceptedStyle() : this.toAlertStyle()
       onupdate()

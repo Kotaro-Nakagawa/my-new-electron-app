@@ -15,16 +15,14 @@ const pathParamValidation = (string: string) => {
 }
 
 class PathSampleBox extends AppRestrictedTextBox {
-  constructor(onUpdate: (value: string) => void) {
-    super('', () => {
-      if (this.isValid) onUpdate(this.value)
-    }, (string: string) => { return pathParamValidation(string) })
+  constructor(onUpdate: (value: string) => { isValid: boolean, message: string }) {
+    super('', () => { }, (string: string) => { return onUpdate(string) })
     this.element.id = 'pathSampleBox'
   }
 }
 
 class PathSampleSection extends AppSection<PathSampleBox> {
-  constructor(onUpdate: (value: string) => void) {
+  constructor(onUpdate: (value: string) => { isValid: boolean, message: string }) {
     super('リクエスト URL のサンプルを入力', new PathSampleBox(onUpdate))
   }
 }
