@@ -142,23 +142,6 @@ class OperationMaker extends AppVStack<[PathLabel, PathSampleSection, ExtractedP
     this.queryParams.putData(queryParams)
   }
 
-  #extractParams(samplePath: string) {
-    const pathParts = samplePath.split('?')
-    this.pathParams.putData(this.#extractPathValues(pathParts.shift()))
-    this.queryParams.putData(this.#extractQueryValues(pathParts.join('?')))
-  }
-
-  #extractPathValues(samplePath: string): { paramName: string, value: string }[] {
-    const samplePathParts = samplePath.split('/')
-    const abstractPathParts = this.#path.split('/')
-
-    return []
-  }
-
-  #extractQueryValues(samplePath: string): { paramName: string, value: string }[] {
-    return []
-  }
-
   get pathParams() {
     return this.contents[OperationMaker.PATH_PARAMS] as ExtractedPathParams
   }
