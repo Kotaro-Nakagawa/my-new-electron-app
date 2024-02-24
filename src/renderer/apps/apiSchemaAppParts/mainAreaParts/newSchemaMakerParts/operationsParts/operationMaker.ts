@@ -8,6 +8,7 @@ import AppButton from "@ElementBase/button";
 import Operation from "@Structure/openAPI/openAPIParts/pathitemParts/operation";
 import Parameter from "@Structure/openAPI/openAPIParts/pathitemParts/parameter";
 import AppElement from "@ElementBase/element";
+import AppLabel from "@ElementBase/label";
 
 const isValidPathForm = (string: string) => {
   if (!string.startsWith('/')) {
@@ -88,6 +89,12 @@ const isValidPathSample = (
   }
 }
 
+class PathLabel extends AppLabel {
+  constructor(path: string, method: string) {
+    super(`${method.toUpperCase()} ${path}`)
+  }
+}
+
 class Buttons extends AppElement {
   static element = () => {
     const elem = document.createElement('div')
@@ -102,13 +109,14 @@ class Buttons extends AppElement {
   }
 }
 
-class OperationMaker extends AppVStack<[PathSampleSection, ExtractedPathParams, ExtractedQueryParams, BodySampleBox, ResponseSampleSection, Buttons]> {
-  static PATH_PARAMS = 1
-  static QUERY_PARAMS = 2
+class OperationMaker extends AppVStack<[PathLabel, PathSampleSection, ExtractedPathParams, ExtractedQueryParams, BodySampleBox, ResponseSampleSection, Buttons]> {
+  static PATH_PARAMS = 2
+  static QUERY_PARAMS = 3
   #path: string
   #method: method
   constructor(path: string, method: method, nextButton: AppButton, backButton: AppButton) {
     super([
+      new PathLabel(path, method),
       new PathSampleSection((path) => {
         return isValidPathSample(
           path,
