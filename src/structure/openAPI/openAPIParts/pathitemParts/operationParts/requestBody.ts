@@ -3,7 +3,7 @@ import MediaType from "../commonParts/mediaType"
 
 interface RequestBody {
   description?: string
-  content: Map<string, MediaType>
+  content: Record<string, MediaType>
   required?: boolean
   extentions?: SpecificationExtensions
 }

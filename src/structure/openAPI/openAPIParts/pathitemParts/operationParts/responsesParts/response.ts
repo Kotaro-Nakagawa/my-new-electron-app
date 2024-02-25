@@ -5,9 +5,9 @@ import Link from "./responseParts/link"
 
 interface Response {
   description: string
-  headers?: Map<string, (Parameter | Reference)>
-  content?: Map<string, MediaType>
-  links?: Map<string, (Link | Reference)>
+  headers?: Record<string, (Parameter | Reference)>
+  content?: Record<string, MediaType>
+  links?: Record<string, (Link | Reference)>
 }
 
 export default Response
