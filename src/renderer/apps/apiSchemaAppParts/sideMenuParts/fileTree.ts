@@ -12,16 +12,19 @@ const element = () => {
 class FileTree {
   #dirEntList: DirEntList
   #onFileSelect: (path: string) => void
+  #onNewSchemaButton: (filePath: string) => void
   #element
-  constructor(onFileSelect: (path: string) => void) {
+  constructor(onFileSelect: (path: string) => void, onNewSchemaButton: (filePath: string) => void) {
     this.#onFileSelect = onFileSelect
+    this.#onNewSchemaButton = onNewSchemaButton
     this.#element = element()
   }
   get element() {
     return this.#element
   }
   loadTree(data: AppDirEnt) {
-    this.#dirEntList = new DirEntList(data, (path: string) => { this.#onFileSelect(path) })
+    this.#dirEntList = new DirEntList(data, (path: string) => { this.#onFileSelect(path) }, (filePath: string) => { this.#onNewSchemaButton(filePath) })
+    this.#element.innerHTML = ''
     this.#element.appendChild(this.#dirEntList.element)
   }
 }

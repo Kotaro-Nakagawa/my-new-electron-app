@@ -2,6 +2,10 @@ import AppElement from "@ElementBase/element";
 import KeyValueRecord from "./keyValueRecord";
 
 const DIV = 'div'
+interface RecursiveKeyValue {
+  key: string
+  value: string | RecursiveKeyValue[]
+}
 
 const baseElement = () => {
   const element = document.createElement(DIV)
@@ -23,8 +27,12 @@ class KeyValueList extends AppElement {
       this.push(r)
     })
   }
-  value() {
+  get value(): RecursiveKeyValue[] {
     return this.#keyValueList.map(kv => kv.value)
+  }
+  clear() {
+    this.#keyValueList = []
+    this.element.innerHTML = ''
   }
 }
 

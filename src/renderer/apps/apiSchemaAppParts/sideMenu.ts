@@ -12,10 +12,12 @@ const element = () => {
 class SideMenu {
   #fileTree
   #onFileSelect
+  #onNewSchemaButton: (filePath: string) => void
   #element
-  constructor(onFileSelect: (path: string) => void) {
+  constructor(onFileSelect: (path: string) => void, onNewSchemaButton: (filePath: string) => void) {
     this.#onFileSelect = onFileSelect
-    this.#fileTree = new FileTree((path) => { this.#onFileSelect(path) })
+    this.#onNewSchemaButton = onNewSchemaButton
+    this.#fileTree = new FileTree((path) => { this.#onFileSelect(path) }, (filePath) => { this.#onNewSchemaButton(filePath) })
     this.#element = element()
     this.#element.appendChild(this.#fileTree.element)
   }

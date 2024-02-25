@@ -20,7 +20,7 @@ class ApiSchemaApp {
   #element
   constructor(service: IAPISchemaService) {
     this.#service = service
-    this.#sideMenu = new SideMenu((path => { this.#fetchSchemaFromServer(path) }))
+    this.#sideMenu = new SideMenu((path => { this.#fetchSchemaFromServer(path) }), (path: string) => { this.loadNewSchemaPage(path) })
     this.#mainArea = new MainArea(async () => {
       const result = await service.openYamlDir()
       if (result !== '') {
@@ -45,6 +45,22 @@ class ApiSchemaApp {
   }
   loadDirTree(dirent: AppDirEnt) {
     this.#sideMenu.loadData(dirent)
+  }
+  loadNewSchemaPage(filePath: string) {
+    this.#mainArea.loadNewSchemaPage(
+      filePath,
+      this.#service.createYaml,
+      async (path: string, data: OpenAPI) => {
+        this.#service.saveYaml(path, data)
+        const dirTree = await this.#service.reloadFolder()
+        if (dirTree !== '') {
+          this.#sideMenu.loadData(dirTree)
+        }
+        const loaded = await this.#service.loadYaml(path)
+        if (loaded !== '') {
+          this.loadData(loaded)
+        }
+      })
   }
 }
 
