@@ -2,8 +2,8 @@ import AppVStack from "@ElementBase/vStack";
 import PathSampleSection from "./operationMakerParts/pathSampleBox";
 import ExtractedPathParams from "./operationMakerParts/extractedPathParams";
 import ExtractedQueryParams from "./operationMakerParts/extractedQueryParams";
-import BodySampleBox from "./operationMakerParts/bodySampleBox";
-import ResponseSampleSection from "./operationMakerParts/responseSampleBox";
+import BodySampleSection from "./operationMakerParts/bodySampleSection";
+import ResponseSampleSection from "./operationMakerParts/responseSampleSection";
 import AppButton from "@ElementBase/button";
 import Operation from "@Structure/openAPI/openAPIParts/pathitemParts/operation";
 import Parameter from "@Structure/openAPI/openAPIParts/pathitemParts/parameter";
@@ -109,7 +109,7 @@ class Buttons extends AppElement {
   }
 }
 
-class OperationMaker extends AppVStack<[PathLabel, PathSampleSection, ExtractedPathParams, ExtractedQueryParams, BodySampleBox, ResponseSampleSection, Buttons]> {
+class OperationMaker extends AppVStack<[PathLabel, PathSampleSection, ExtractedPathParams, ExtractedQueryParams, BodySampleSection, ResponseSampleSection, Buttons]> {
   static PATH_PARAMS = 2
   static QUERY_PARAMS = 3
   #path: string
@@ -128,7 +128,7 @@ class OperationMaker extends AppVStack<[PathLabel, PathSampleSection, ExtractedP
       }),
       new ExtractedPathParams(),
       new ExtractedQueryParams(),
-      new BodySampleBox(),
+      new BodySampleSection(),
       new ResponseSampleSection(),
       new Buttons(backButton, nextButton)
     ])
