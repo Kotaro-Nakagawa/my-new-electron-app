@@ -112,6 +112,8 @@ class Buttons extends AppElement {
 class OperationMaker extends AppVStack<[PathLabel, PathSampleSection, ExtractedPathParams, ExtractedQueryParams, BodySampleSection, ResponseSampleSection, Buttons]> {
   static PATH_PARAMS = 2
   static QUERY_PARAMS = 3
+  static REQUEST_BODY = 4
+  static RESPONSE_BODY = 5
   #path: string
   #method: method
   constructor(path: string, method: method, nextButton: AppButton, backButton: AppButton) {
@@ -150,6 +152,14 @@ class OperationMaker extends AppVStack<[PathLabel, PathSampleSection, ExtractedP
     return this.contents[OperationMaker.QUERY_PARAMS] as ExtractedQueryParams
   }
 
+  get requestBody() {
+    return this.contents[OperationMaker.REQUEST_BODY] as BodySampleSection
+  }
+
+  get responseBody() {
+    return this.contents[OperationMaker.RESPONSE_BODY] as ResponseSampleSection
+  }
+
   updateQueries() {
 
   }
@@ -171,7 +181,7 @@ class OperationMaker extends AppVStack<[PathLabel, PathSampleSection, ExtractedP
     return {
       parameters: pathParams.concat(queryParams),
       // requestBody: { content: new Map() },
-      responses: {}
+      responses: this.responseBody.responseSchema
     }
   }
 }
