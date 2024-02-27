@@ -180,7 +180,7 @@ class OperationMaker extends AppVStack<[PathLabel, PathSampleSection, ExtractedP
     const queryParams = this.queryParams.value.map<Parameter>(kv => { return { name: kv.key, in: 'path', example: kv.value as string } })
     return {
       parameters: pathParams.concat(queryParams),
-      // requestBody: { content: new Map() },
+      requestBody: this.requestBody.requestBodySchema,
       responses: this.responseBody.responseSchema
     }
   }
