@@ -9,7 +9,7 @@ interface Schema {
   maximum?: number
   exclusiveMinimum?: number
   exclusiveMaximum?: number
-  properties?: Map<string, Schema>
+  properties?: Record<string, Schema>
   required?: string[]
   items?: Schema
   prefixItems?: Schema[]
