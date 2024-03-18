@@ -44,6 +44,7 @@ class OperationSheetMain {
     this.#pathAndMethod.loadData(data.path, data.method)
     if (data.parameters) this.#parameters.loadData(data.parameters)
     if (data.requestBody) this.#requestBody.loadData(data.requestBody)
+    if (data.responses) this.#responses.loadData(data.responses)
   }
 }
 
