@@ -1,8 +1,8 @@
 import SchemaValues from "./parameterInterface"
 import ParameterDescriptionItem from "./recordParts/parameterDescriptionItem"
 import ParameterExampleItem from "./recordParts/parameterExampleItem"
-import ParameterMaxItem from "./recordParts/parameterMaxItem"
-import ParameterMinItem from "./recordParts/parameterMinItem"
+import RequestBodyMaxItem from "./recordParts/requestBodyMaxItem"
+import RequestBodyMinItem from "./recordParts/requestBodyMinItem"
 import ParameterNameItem from "./recordParts/parameterNameItem"
 import ParameterTypeItem from "./recordParts/parameterTypeItem"
 import ParameterValueOrLengthItem from "./recordParts/parameterValueOrLengthItem"
@@ -46,9 +46,9 @@ class RequestBodyRecord {
     this.#depth = depth
     this.#name = new ParameterNameItem(values.name)
     this.#type = new ParameterTypeItem(values.type)
-    this.#min = new ParameterMinItem(values.min)
+    this.#min = new RequestBodyMinItem(values.min)
     this.#valueorlength = new ParameterValueOrLengthItem(values.type === "string" ? "length" : "value")
-    this.#max = new ParameterMaxItem(values.max)
+    this.#max = new RequestBodyMaxItem(values.max)
     this.#description = new ParameterDescriptionItem(values.description)
     this.#example = new ParameterExampleItem(values.example)
 

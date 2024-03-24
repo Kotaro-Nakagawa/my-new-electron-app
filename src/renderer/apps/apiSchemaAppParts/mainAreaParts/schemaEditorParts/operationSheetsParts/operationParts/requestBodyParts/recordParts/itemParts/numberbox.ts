@@ -1,19 +1,17 @@
+import AppElement from "@ElementBase/element"
+
 const element = () => {
   const ret = document.createElement('div')
   ret.classList.add('editable')
   return ret
 }
 
-class NumberBox {
+class NumberBox extends AppElement {
   #value
-  #element
   constructor(initialValue: number) {
+    super(element())
     this.#value = initialValue
-    this.#element = element()
-    this.#element.innerText = this.#value ? this.#value.toString() : ''
-  }
-  get element() {
-    return this.#element
+    this.element.innerText = this.#value ? this.#value.toString() : ''
   }
 }
 
