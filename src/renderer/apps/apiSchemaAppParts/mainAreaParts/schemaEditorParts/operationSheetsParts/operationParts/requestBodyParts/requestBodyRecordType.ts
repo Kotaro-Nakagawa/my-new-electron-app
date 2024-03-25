@@ -1,5 +1,3 @@
-import ParameterDescriptionItem from "./recordParts/parameterDescriptionItem";
-import ParameterExampleItem from "./recordParts/parameterExampleItem";
 import RequestBodyMaxItem from "./recordParts/requestBodyMaxItem";
 import RequestBodyLimitMayExclusiveSelect from "./recordParts/requestBodyLimitMayExclusiveSelect";
 import RequestBodyMinItem from "./recordParts/requestBodyMinItem";
