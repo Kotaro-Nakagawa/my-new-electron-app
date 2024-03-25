@@ -16,6 +16,36 @@ import Info from "@Structure/openAPI/openAPIParts/info";
 import InfoTableInterface from "./schemaEditorParts/infoTableInterface";
 import Contact from "@Structure/openAPI/openAPIParts/infoParts/contact";
 import License from "@Structure/openAPI/openAPIParts/infoParts/license";
+import Responses from "@Structure/openAPI/openAPIParts/pathitemParts/operationParts/responses";
+import Response from "@Structure/openAPI/openAPIParts/pathitemParts/operationParts/responsesParts/response";
+import MediaType from "@Structure/openAPI/openAPIParts/pathitemParts/commonParts/mediaType";
+
+const schemaValuesFromSchema = (name: string, schema: Schema, required: boolean): SchemaValues => {
+  return {
+    name: name,
+    description: schema.description,
+    required: required,
+    type: Array.isArray(schema.type) ? schema.type[0] : schema.type,
+    format: schema.format,
+    enum: schema.enum,
+    pattern: schema.pattern,
+    min: schema.exclusiveMinimum || schema.minimum || schema.minlength,
+    max: schema.exclusiveMaximum || schema.maximum || schema.maxlength,
+    isMinExclusive: "exclusiveMinimum" in schema ? true : false,
+    isMaxExclusive: "exclusiveMaximum" in schema ? true : false,
+    example: schema.examples ? schema.examples.join('\n') : '',
+    children: (() => {
+      if (schema.properties) {
+        return Array.from(Object.entries(schema.properties)).map(([k, v]) => {
+          return schemaValuesFromSchema(k, v, schema.required ? schema.required.includes(k) : false)
+        })
+      }
+      if (schema.items) {
+        return [schemaValuesFromSchema('<item>', schema.items, undefined)]
+      }
+    })()
+  }
+}
 
 const intoJsonFromSchema = (info: Info): InfoTableInterface => {
   const valueConverter = (key: string, value: string | Contact | License): string | InfoTableInterface => {
@@ -59,32 +89,17 @@ const requestBodyJsonFromSchema = (body: RequestBody | Reference): SchemaValues 
   // const [firstMediaKey] = body.content.keys()
   // const firstMedia = body.content.get(firstMediaKey)
   const firstMedia = contents[0][1]
-  const schemaValuesFromSchema = (name: string, schema: Schema, required: boolean): SchemaValues => {
-    return {
-      name: name,
-      description: schema.description,
-      required: required,
-      type: Array.isArray(schema.type) ? schema.type[0] : schema.type,
-      format: schema.format,
-      enum: schema.enum,
-      pattern: schema.pattern,
-      min: schema.exclusiveMinimum || schema.minimum || schema.minlength,
-      max: schema.exclusiveMaximum || schema.maximum || schema.maxlength,
-      isMinExclusive: "exclusiveMinimum" in schema ? true : false,
-      isMaxExclusive: "exclusiveMaximum" in schema ? true : false,
-      example: schema.examples ? schema.examples.join('\n') : '',
-      children: (() => {
-        if (schema.properties) {
-          return Array.from(Object.entries(schema.properties)).map(([k, v]) => {
-            return schemaValuesFromSchema(k, v, schema.required ? schema.required.includes(k) : false)
-          })
-        }
-        if (schema.items) {
-          return [schemaValuesFromSchema('<item>', schema.items, undefined)]
-        }
-      })()
-    }
+  return schemaValuesFromSchema('<root>', firstMedia.schema, true)
+}
+
+const responseBodyJsonFromSchema = (body: Responses | Reference): SchemaValues => {
+  let firstMedia: MediaType = undefined
+  if ("200" in body && "content" in body[200]) {
+    firstMedia = body[200].content["application/json"]
+  } else if ("201" in body && "content" in body[201]) {
+    firstMedia = body[201].content["application/json"]
   }
+  if (!firstMedia) return undefined
   return schemaValuesFromSchema('<root>', firstMedia.schema, true)
 }
 
@@ -98,7 +113,7 @@ const operationJsonFromSchema = (path: string, method: string, operation: Operat
     operationId: operation.operationId,
     parameters: operation.parameters ? parametersJsonFromSchema(operation.parameters) : [],
     requestBody: operation.requestBody ? requestBodyJsonFromSchema(operation.requestBody) : undefined,
-    responses: undefined // To be implemented
+    responses: operation.responses ? responseBodyJsonFromSchema(operation.responses) : undefined // To be implemented
   }
   return ret
 }
