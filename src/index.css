@@ -26,6 +26,25 @@ div.alert::before {
   content: "\02715";
 }
 
+div.switch {
+  border-style: solid;
+  border-width: 2px 0px 0px 0px;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+div.switch-on {
+  border-color: #0e0ee0;
+}
+
+div.switch-off {
+  border-color: #dadce0;
+}
+
+div.button:hover {
+  background-color: #caccd0;
+}
+
 #main {
   height: 100vh;
 

@@ -92,15 +92,11 @@ const requestBodyJsonFromSchema = (body: RequestBody | Reference): SchemaValues 
   return schemaValuesFromSchema('<root>', firstMedia.schema, true)
 }
 
-const responseBodyJsonFromSchema = (body: Responses | Reference): SchemaValues => {
-  let firstMedia: MediaType = undefined
-  if ("200" in body && "content" in body[200]) {
-    firstMedia = body[200].content["application/json"]
-  } else if ("201" in body && "content" in body[201]) {
-    firstMedia = body[201].content["application/json"]
-  }
-  if (!firstMedia) return undefined
-  return schemaValuesFromSchema('<root>', firstMedia.schema, true)
+const responseBodyJsonFromSchema = (body: Responses | Reference): Record<string, SchemaValues> => {
+  if ("$ref" in body) return undefined
+  return Object.fromEntries(Object.entries(body).map(([k, r]) => {
+    return [k, ("content" in r) ? schemaValuesFromSchema('<root>', r.content["application/json"].schema, true) : undefined]
+  }))
 }
 
 const operationJsonFromSchema = (path: string, method: string, operation: Operation): OperationData | undefined => {

@@ -9,7 +9,7 @@ interface OperationData {
   operationId?: string
   parameters?: ParameterValues[]
   requestBody?: SchemaValues
-  responses?: SchemaValues
+  responses?: Record<string, SchemaValues>
 }
 
 export default OperationData

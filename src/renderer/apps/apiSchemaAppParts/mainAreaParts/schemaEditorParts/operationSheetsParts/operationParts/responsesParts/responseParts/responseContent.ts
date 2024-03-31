@@ -15,7 +15,7 @@ class ResponseContent extends AppElement {
     this.element.appendChild(this.#responseBody.element)
   }
   loadData(data: SchemaValues) {
-    this.#responseBody.putData(data)
+    if (data) this.#responseBody.putData(data)
   }
 }
 
