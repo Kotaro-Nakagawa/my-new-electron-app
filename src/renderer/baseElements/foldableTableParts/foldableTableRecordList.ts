@@ -30,6 +30,10 @@ class AppFoldableTableRecordList<T extends { [key: string]: AppElement }> extend
     this.#contents.push(newElement)
     this.element.append(newElement.element)
   }
+
+  getContents(): (AppFoldableTableRecord<T> | AppFoldableSubTable<T>)[] {
+    return this.#contents
+  }
 }
 
 export default AppFoldableTableRecordList

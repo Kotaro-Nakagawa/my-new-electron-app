@@ -3,6 +3,8 @@ import SchemaValues from "./requestBodyParts/parameterInterface"
 import AppResponse from "./responsesParts/response"
 import AppElement from "@ElementBase/element"
 import AppSwitchView from "@ElementBase/appSwitchView"
+import Schema from "@Structure/openAPI/schema"
+import Responses from "@Structure/openAPI/openAPIParts/pathitemParts/operationParts/responses"
 
 const elementId = 'response-body'
 
@@ -12,7 +14,7 @@ const element = () => {
   return ret
 }
 
-class Responses extends AppSwitchView<AppResponse> {
+class AppResponses extends AppSwitchView<AppResponse> {
   constructor() {
     super()
   }
@@ -27,14 +29,21 @@ class Responses extends AppSwitchView<AppResponse> {
     })
     this.reloadTabs(tabs)
   }
+  get value(): Responses {
+    const contents = this.getTabs()
+    return Object.fromEntries(contents.map(c => [c.tabName, c.content.value]))
+  }
 }
 
-class ResponsesSection extends AppSection<Responses> {
+class ResponsesSection extends AppSection<AppResponses> {
   constructor() {
-    super('Responses', new Responses())
+    super('Responses', new AppResponses())
   }
   loadData(data: Record<string, SchemaValues>) {
     this.content.loadData(data)
+  }
+  get value(): Responses {
+    return this.content.value
   }
 }
 

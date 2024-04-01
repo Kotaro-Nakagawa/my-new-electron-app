@@ -13,6 +13,7 @@ import responseBodyMinText from "./responseBodyParts/responseBodyRecordParts/res
 import responseBodyMaxText from "./responseBodyParts/responseBodyRecordParts/responseBodyMaxText";
 import ResponseBodyLimitMayExclusiveSelect from "./responseBodyParts/responseBodyRecordParts/responseBodyLimitMayExclusiveSelect";
 import responseBodyExampleText from "./responseBodyParts/responseBodyRecordParts/responseBodyExampleText";
+import Schema from "@Structure/openAPI/schema";
 
 const columns = {
   name: 1,
@@ -90,6 +91,102 @@ class ResponseBody extends AppFoldableTable<ResponseBodyRecordType> {
           example: new responseBodyExampleText(data.example)
         }
       }
+    }
+  }
+
+  get value(): Schema {
+    const contents = this.getContents()
+    const SchemaValues = valuesFromElement(contents)
+    return schemaFromSchemaValues(SchemaValues)
+
+    function valuesFromElement(elem: nestedElementForFoldableTable<ResponseBodyRecordType>): SchemaValues {
+      if ('record' in elem) {
+        const record = elem.record
+        return {
+          name: record.name.value,
+          description: record.description.value,
+          required: record.required.value === 'true',
+          deprecated: undefined,
+          allowEmptyValue: undefined,
+          type: jsonTypeFromString(record.type.value),
+          format: record.format.value,
+          enum: record.enum.value,
+          pattern: record.pattern.value,
+          min: Number.parseFloat(record.min.value),
+          max: Number.parseFloat(record.max.value),
+          isMinExclusive: record.isMinExclusive.value === 'true',
+          isMaxExclusive: record.isMaxExclusive.value === 'true',
+          example: record.example.value,
+          children: undefined
+        }
+      } else {
+        const record = elem.subroot
+        const children = elem.children
+        return {
+          name: record.name.value,
+          description: record.description.value,
+          required: record.required.value === 'true',
+          deprecated: undefined,
+          allowEmptyValue: undefined,
+          type: jsonTypeFromString(record.type.value),
+          format: record.format.value,
+          enum: record.enum.value,
+          pattern: record.pattern.value,
+          min: Number.parseFloat(record.min.value),
+          max: Number.parseFloat(record.max.value),
+          isMinExclusive: record.isMinExclusive.value === 'true',
+          isMaxExclusive: record.isMaxExclusive.value === 'true',
+          example: record.example.value,
+          children: children.map(c => valuesFromElement(c))
+        }
+      }
+
+      function jsonTypeFromString(str: string): JsonType {
+        if (str === 'string') return str
+        if (str === 'number') return str
+        if (str === 'boolean') return str
+        if (str === 'object') return str
+        if (str === 'integer') return str
+        if (str === 'array') return str
+        if (str === 'null') return str
+        return undefined
+      }
+    }
+
+    function schemaFromSchemaValues(schemaValues: SchemaValues): Schema {
+      const schema: Schema = {
+        description: schemaValues.description,
+        type: schemaValues.type,
+        format: schemaValues.format,
+        enum: schemaValues.enum,
+        pattern: schemaValues.pattern,
+        exclusiveMinimum: schemaValues.isMinExclusive ? schemaValues.min : undefined,
+        minimum: schemaValues.isMinExclusive ? undefined : schemaValues.min,
+        exclusiveMaximum: schemaValues.isMaxExclusive ? schemaValues.max : undefined,
+        maximum: schemaValues.isMaxExclusive ? undefined : schemaValues.max,
+        minlength: schemaValues.min,
+        maxlength: schemaValues.max,
+        examples: schemaValues.example ? schemaValues.example.split('\n') : undefined,
+        properties: {},
+        required: [],
+        default: schemaValues.example ? schemaValues.example.split('\n')[0] : '',
+      };
+
+      if (schemaValues.required !== undefined) {
+        schema.required = schemaValues.required ? [schemaValues.name] : [];
+      }
+
+      if (schemaValues.children) {
+        schema.properties = {};
+        schemaValues.children.forEach(child => {
+          schema.properties[child.name] = schemaFromSchemaValues(child);
+          if (child.required) {
+            schema.required.push(child.name);
+          }
+        });
+      }
+
+      return schema;
     }
   }
 }

@@ -44,6 +44,9 @@ class AppFoldableTableRecord<T extends { [key: string]: AppElement }> extends Ap
   getContent<K extends keyof T>(key: K): T[K] {
     return this.#contents[key];
   }
+  getContents(): T {
+    return this.#contents
+  }
 }
 
 export default AppFoldableTableRecord

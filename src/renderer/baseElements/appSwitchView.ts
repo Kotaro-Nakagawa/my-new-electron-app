@@ -85,6 +85,15 @@ class AppSwitchView<T extends AppElement> extends AppElement {
     this.#tabAreaElement.innerHTML = ''
     this.#mainAreaElement.innerHTML = ''
   }
+  getTabs(): { tabName: string; content: T }[] {
+    const tabNames = this.#tabElements.map(e => e.innerText)
+    return tabNames.map((t, i) => {
+      return {
+        tabName: t,
+        content: this.#contents[i]
+      }
+    })
+  }
 }
 
 export default AppSwitchView
