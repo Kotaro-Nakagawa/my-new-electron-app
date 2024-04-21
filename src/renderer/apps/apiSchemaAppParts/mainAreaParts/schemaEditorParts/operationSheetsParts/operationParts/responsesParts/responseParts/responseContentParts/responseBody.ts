@@ -96,8 +96,11 @@ class ResponseBody extends AppFoldableTable<ResponseBodyRecordType> {
 
   get value(): Schema {
     const contents = this.getContents()
-    const SchemaValues = valuesFromElement(contents)
-    return schemaFromSchemaValues(SchemaValues)
+    if ('children' in contents) {
+      const SchemaValues = valuesFromElement(contents.children[0])
+      return schemaFromSchemaValues(SchemaValues)
+    }
+    return undefined
 
     function valuesFromElement(elem: nestedElementForFoldableTable<ResponseBodyRecordType>): SchemaValues {
       if ('record' in elem) {

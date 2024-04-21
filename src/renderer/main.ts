@@ -26,7 +26,7 @@ class Dock {
   }
 
   loadAPISchema(data: OpenAPI) {
-    this.#apiSchemaApp.loadData(data)
+    this.#apiSchemaApp.loadData(data, '')
   }
 
   loadDirectoryTree(data: AppDirEnt) {

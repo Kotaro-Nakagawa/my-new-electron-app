@@ -28,6 +28,9 @@ class OperationId {
   loadData(value: string) {
     this.#textBoxElement.innerText = value
   }
+  get value(): string {
+    return this.#textBoxElement.innerText
+  }
 }
 
 export default OperationId

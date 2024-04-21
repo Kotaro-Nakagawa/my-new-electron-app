@@ -46,6 +46,17 @@ class OperationSheetMain {
     if (data.requestBody) this.#requestBody.loadData(data.requestBody)
     if (data.responses) this.#responses.loadData(data.responses)
   }
+
+  get value() {
+    return {
+      operationId: this.#operationId.value,
+      path: this.#pathAndMethod.value.path,
+      method: this.#pathAndMethod.value.method,
+      parameters: this.#parameters.value,
+      requestBody: this.#requestBody.value,
+      responses: this.#responses.value
+    }
+  }
 }
 
 export default OperationSheetMain

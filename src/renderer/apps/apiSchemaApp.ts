@@ -38,10 +38,10 @@ class ApiSchemaApp {
   async #fetchSchemaFromServer(path: string) {
     const fetched = await this.#service.loadYaml(path)
     if (fetched === '') return
-    this.loadData(fetched)
+    this.loadData(fetched, path)
   }
-  loadData(apiSchema: OpenAPI) {
-    this.#mainArea.loadData(apiSchema)
+  loadData(apiSchema: OpenAPI, filePath: string) {
+    this.#mainArea.loadData(apiSchema, filePath, async (path: string, data: OpenAPI) => { console.log('do save'); this.#service.saveYaml(path, data) })
   }
   loadDirTree(dirent: AppDirEnt) {
     this.#sideMenu.loadData(dirent)
@@ -58,7 +58,7 @@ class ApiSchemaApp {
         }
         const loaded = await this.#service.loadYaml(path)
         if (loaded !== '') {
-          this.loadData(loaded)
+          this.loadData(loaded, path)
         }
       })
   }

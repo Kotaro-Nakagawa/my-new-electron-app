@@ -27,8 +27,9 @@ class MainArea {
     return this.#element
   }
 
-  loadData(apiSchema: OpenAPI) {
-    this.#schemaEditor = new SchemaEditor(apiSchema)
+  loadData(apiSchema: OpenAPI, filePath: string, saveFile: (path: string, data: OpenAPI) => void) {
+    if (this.#schemaEditor instanceof SchemaEditor) this.#schemaEditor.save()
+    this.#schemaEditor = new SchemaEditor(apiSchema, filePath, saveFile)
     this.#element.innerHTML = ''
     this.#element.appendChild(this.#schemaEditor.element)
   }

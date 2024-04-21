@@ -58,6 +58,40 @@ class Parameter {
   get element() {
     return this.#element
   }
+
+  get value(): ParameterValues {
+    return {
+      name: this.#name.element.innerText,
+      in: inFromText(this.#in.element.innerText),
+      type: typeFromText(this.#type.element.innerText),
+      min: numberFromText(this.#min.element.innerText),
+      max: numberFromText(this.#max.element.innerText),
+      example: this.#name.element.innerText,
+      description: this.#name.element.innerText,
+    }
+
+    function inFromText(text: string): "query" | "header" | "path" | "cookie" {
+      if (text === "query") return text
+      if (text === "header") return text
+      if (text === "path") return text
+      if (text === "cookie") return text
+      return undefined
+    }
+
+    function typeFromText(text: string): "string" | "number" | "boolean" | "integer" {
+      if (text === "string") return text
+      if (text === "number") return text
+      if (text === "boolean") return text
+      if (text === "integer") return text
+      return undefined
+    }
+
+    function numberFromText(text: string): number {
+      const number = Number.parseFloat(text)
+      if (isNaN(number)) return undefined
+      return number
+    }
+  }
 }
 
 export default Parameter

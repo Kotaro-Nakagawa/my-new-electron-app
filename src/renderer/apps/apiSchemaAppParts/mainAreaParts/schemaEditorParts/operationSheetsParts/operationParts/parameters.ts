@@ -59,6 +59,19 @@ class Parameters {
   get element() {
     return this.#element
   }
+  get value(): ParameterValuesList {
+    return this.#parameters.map(c => {
+      return {
+        name: c.value.name,
+        in: c.value.in,
+        type: c.value.type,
+        min: c.value.min,
+        max: c.value.max,
+        example: c.value.example,
+        description: c.value.description
+      }
+    })
+  }
 }
 
 export default Parameters

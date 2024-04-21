@@ -5,6 +5,8 @@ import AppElement from "@ElementBase/element"
 import AppSwitchView from "@ElementBase/appSwitchView"
 import Schema from "@Structure/openAPI/schema"
 import Responses from "@Structure/openAPI/openAPIParts/pathitemParts/operationParts/responses"
+import Reference from "@Structure/openAPI/openAPIParts/reference"
+import SchemaConverter from "./responsesParts/schemaConverter"
 
 const elementId = 'response-body'
 
@@ -39,8 +41,12 @@ class ResponsesSection extends AppSection<AppResponses> {
   constructor() {
     super('Responses', new AppResponses())
   }
-  loadData(data: Record<string, SchemaValues>) {
-    this.content.loadData(data)
+  loadData(data: Responses | Reference) {
+    if ("$ref" in data) return
+    const records = Object.fromEntries(Object.entries(data).map(([k, r]) => {
+      return [k, ("content" in r) ? SchemaConverter.schemaValuesFromSchema('<root>', r.content["application/json"].schema, true) : undefined]
+    }))
+    this.content.loadData(records)
   }
   get value(): Responses {
     return this.content.value

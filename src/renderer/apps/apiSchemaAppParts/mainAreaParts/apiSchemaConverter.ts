@@ -19,6 +19,7 @@ import License from "@Structure/openAPI/openAPIParts/infoParts/license";
 import Responses from "@Structure/openAPI/openAPIParts/pathitemParts/operationParts/responses";
 import Response from "@Structure/openAPI/openAPIParts/pathitemParts/operationParts/responsesParts/response";
 import MediaType from "@Structure/openAPI/openAPIParts/pathitemParts/commonParts/mediaType";
+import PathItem from "@Structure/openAPI/openAPIParts/pathItem";
 
 const schemaValuesFromSchema = (name: string, schema: Schema, required: boolean): SchemaValues => {
   return {
@@ -60,6 +61,41 @@ const intoJsonFromSchema = (info: Info): InfoTableInterface => {
     return 'ERROR'
   }
   return Object.entries(info).map(([k, v]) => { return { key: k, value: valueConverter(k, v) } })
+}
+
+const infoSchemaFromJson = (json: InfoTableInterface): Info => {
+  const title = json.find(e => e.key === 'title')
+  const summary = json.find(e => e.key === 'summary')
+  const description = json.find(e => e.key === 'description')
+  const termsOfService = json.find(e => e.key === 'termsOfService')
+  const Contact = json.find(e => e.key === 'Contact')
+  const ContactName = Contact ? typeof Contact.value === 'object' ? Contact.value.find(e => e.key === 'name') : { value: '' } : { value: '' }
+  const ContactUrl = Contact ? typeof Contact.value === 'object' ? Contact.value.find(e => e.key === 'url') : { value: '' } : { value: '' }
+  const ContactEmail = Contact ? typeof Contact.value === 'object' ? Contact.value.find(e => e.key === 'email') : { value: '' } : { value: '' }
+  const license = json.find(e => e.key === 'license')
+  const licenseName = license ? typeof license.value === 'object' ? license.value.find(e => e.key === 'name') : { value: '' } : { value: '' }
+  const licenseIdentifier = license ? typeof license.value === 'object' ? license.value.find(e => e.key === 'identifier') : { value: '' } : { value: '' }
+  const licenseUrl = license ? typeof license.value === 'object' ? license.value.find(e => e.key === 'url') : { value: '' } : { value: '' }
+  const version = json.find(e => e.key === 'version')
+  const contactBody = {
+    name: typeof ContactName.value === 'string' ? ContactName.value : '',
+    url: typeof ContactUrl.value === 'string' ? ContactUrl.value : '',
+    email: typeof ContactEmail.value === 'string' ? ContactEmail.value : ''
+  }
+  const licenseBody = {
+    name: typeof licenseName.value === 'string' ? licenseName.value : '',
+    identifier: typeof licenseIdentifier.value === 'string' ? licenseIdentifier.value : '',
+    url: typeof licenseUrl.value === 'string' ? licenseUrl.value : '',
+  }
+  return {
+    title: typeof title.value === 'string' ? title.value : '',
+    summary: summary ? typeof summary.value === 'string' ? summary.value : '' : '',
+    description: description ? typeof description.value === 'string' ? description.value : '' : '',
+    termsOfService: termsOfService ? typeof termsOfService.value === 'string' ? termsOfService.value : '' : '',
+    Contact: contactBody,
+    license: licenseBody,
+    version: version ? typeof version.value === 'string' ? version.value : '' : '',
+  }
 }
 
 const parametersJsonFromSchema = (parameters: (Parameter | Reference)[]): ParameterValues[] => {
@@ -108,8 +144,8 @@ const operationJsonFromSchema = (path: string, method: string, operation: Operat
     description: operation.description,
     operationId: operation.operationId,
     parameters: operation.parameters ? parametersJsonFromSchema(operation.parameters) : [],
-    requestBody: operation.requestBody ? requestBodyJsonFromSchema(operation.requestBody) : undefined,
-    responses: operation.responses ? responseBodyJsonFromSchema(operation.responses) : undefined // To be implemented
+    requestBody: operation.requestBody ? operation.requestBody : undefined,
+    responses: operation.responses ? operation.responses : undefined
   }
   return ret
 }
@@ -141,6 +177,54 @@ const pathJsonFromSchema = (paths: Paths): PathTableInterface => {
   }
 }
 
+const ParameterSchemaFromParameterValues = (json: ParameterValues[]): Parameter[] => {
+  return json.map(p => {
+    return {
+      name: p.name,
+      in: p.in,
+      description: p.description,
+      required: p.required,
+      deprecated: p.deprecated,
+      allowEmptyValue: p.allowEmptyValue,
+      style: undefined,
+      explode: undefined,
+      allowReserved: undefined,
+      schema: undefined,
+      example: p.example,
+      examples: undefined,
+      content: undefined
+    }
+  })
+}
+
+const operationSchemaFromOperationSheet = (sheet: OperationData): Operation => {
+  const ret: Operation = {}
+  ret.operationId = sheet.operationId
+  ret.parameters = ParameterSchemaFromParameterValues(sheet.parameters)
+  ret.requestBody = sheet.requestBody
+  ret.responses = sheet.responses
+  return ret
+}
+
+const pathItemFromOperationSheets = (sheets: OperationSheetsData): PathItem => {
+  const ret: PathItem = {}
+  const methods = ["get", "put", "post", "delete", "patch", "head"] as const
+  methods.forEach((m) => {
+    const getOperation = sheets.find(s => s.method === m)
+    ret[m] = getOperation ? operationSchemaFromOperationSheet(getOperation) : undefined
+  })
+  return ret
+}
+
+const pathsSchemaFromJson = (sheets: OperationSheetsData): Paths => {
+  const pathStrs = sheets.map(s => s.path)
+  const ret: Paths = {}
+  pathStrs.forEach((p) => {
+    ret[p] = pathItemFromOperationSheets(sheets.filter(s => s.path === p))
+  })
+  return ret
+}
+
 class ApiSchemaConverter {
   static schemaToViewJson(openAPI: OpenAPI): SchemaViewJson {
     return {
@@ -150,8 +234,12 @@ class ApiSchemaConverter {
     }
   }
 
-  static viewJsonToSchema() {
-    // tobeImplemented
+  static viewJsonToSchema(info: InfoTableInterface, operations: OperationSheetsData): OpenAPI {
+    return {
+      openapi: '3.1.0',
+      info: infoSchemaFromJson(info),
+      paths: pathsSchemaFromJson(operations)
+    }
   }
 }
 

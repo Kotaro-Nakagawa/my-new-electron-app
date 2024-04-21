@@ -19,9 +19,34 @@ const createParts = (info: InfoTableInterface, path: PathTableInterface, operati
 }
 
 class SchemaEditor extends AppVStack<[InfoTable, PathTable, OperationSheets]> {
-  constructor(apiSchema: OpenAPI) {
+  #filePath
+  #onSaveCommand
+  #schema
+  constructor(apiSchema: OpenAPI, filePath: string, onSaveCommand: (path: string, data: OpenAPI) => void) {
     const { info, path, operations } = ApiSchemaConverter.schemaToViewJson(apiSchema)
     super(createParts(info, path, operations))
+    this.#filePath = filePath
+    this.#onSaveCommand = onSaveCommand
+    this.#schema = apiSchema
+  }
+  save() {
+    const info = this.contents[0].value
+    const pathLists = this.contents[1]
+    const operationSheets = this.contents[2].data
+    const values = ApiSchemaConverter.viewJsonToSchema(info, operationSheets)
+    values.components = this.#schema.components
+    values.externalDocs = this.#schema.externalDocs
+    values.jsonSchemaDialect = this.#schema.jsonSchemaDialect
+    values.servers = this.#schema.servers
+    values.webhooks = this.#schema.webhooks
+    values.components = this.#schema.components
+    values.security = this.#schema.security
+    values.tags = this.#schema.tags
+    values.externalDocs = this.#schema.externalDocs
+    console.log('save This ↓')
+    console.log(values)
+    console.log('↑ save This')
+    this.#onSaveCommand(this.#filePath, values)
   }
 }
 
