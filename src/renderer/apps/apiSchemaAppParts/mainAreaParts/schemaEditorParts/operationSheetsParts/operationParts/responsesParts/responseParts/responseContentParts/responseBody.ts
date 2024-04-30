@@ -174,10 +174,6 @@ class ResponseBody extends AppFoldableTable<ResponseBodyRecordType> {
         default: schemaValues.example ? schemaValues.example.split('\n')[0] : '',
       };
 
-      if (schemaValues.required !== undefined) {
-        schema.required = schemaValues.required ? [schemaValues.name] : [];
-      }
-
       if (schemaValues.children) {
         schema.properties = {};
         schemaValues.children.forEach(child => {
