@@ -105,13 +105,10 @@ class AppRequestBody extends AppFoldableTable<RequestBodyRecordType> {
   }
   get value(): Schema {
     const contents = this.getContents()
-    if ('children' in contents) {
-      const SchemaValues = valuesFromElement(contents.children[0])
-      console.log(`returning schema values`)
-      console.log(SchemaValues)
-      return schemaFromSchemaValues(SchemaValues)
-    }
-    return undefined
+    if (!('children' in contents)) return undefined
+    if (contents.children.length === 0) return undefined
+    const SchemaValues = valuesFromElement(contents.children[0])
+    return schemaFromSchemaValues(SchemaValues)
 
     function valuesFromElement(elem: nestedElementForFoldableTable<RequestBodyRecordType>): SchemaValues {
       console.log(elem)

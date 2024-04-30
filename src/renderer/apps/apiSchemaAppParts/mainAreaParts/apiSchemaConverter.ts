@@ -100,12 +100,6 @@ const infoSchemaFromJson = (json: InfoTableInterface): Info => {
 
 const parametersJsonFromSchema = (parameters: (Parameter | Reference)[]): ParameterValues[] => {
   const ret = parameters.map(p => {
-    // p が reference 型だった場合の処理をここに入れる
-    const guardToSimpleType = (t: (JsonType | JsonType[])): "string" | "number" | "integer" | "boolean" => {
-      const tt = (Array.isArray(t)) ? t[0] : t
-      if (["string", "number", "integer", "boolean"].includes(tt)) return tt as "string" | "number" | "integer" | "boolean"
-      return undefined
-    }
     return {
       name: "name" in p ? p.name : "ref",
       in: "in" in p ? p.in : "query",
@@ -113,7 +107,8 @@ const parametersJsonFromSchema = (parameters: (Parameter | Reference)[]): Parame
       required: "required" in p ? p.required : undefined,
       deprecated: "deprecated" in p ? p.deprecated : undefined,
       allowEmptyValue: "allowEmptyValue" in p ? p.allowEmptyValue : undefined,
-      type: "schema" in p ? guardToSimpleType(p.schema.type) : undefined,
+      schema: "schema" in p ? p.schema : undefined,
+      example: "example" in p ? p.example : undefined
     }
   })
   return ret

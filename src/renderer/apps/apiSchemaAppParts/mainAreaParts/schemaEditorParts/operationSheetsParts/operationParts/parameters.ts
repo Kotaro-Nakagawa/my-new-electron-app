@@ -1,4 +1,5 @@
-import Parameter from "./parametersParts/parameter"
+import Parameter from "@Structure/openAPI/openAPIParts/pathitemParts/parameter"
+import AppParameter from "./parametersParts/parameter"
 import ParameterValues from "./parametersParts/parameterInterface"
 
 type ParameterValuesList = ParameterValues[]
@@ -28,7 +29,7 @@ const element = () => {
 }
 
 class Parameters {
-  #parameters: Parameter[]
+  #parameters: AppParameter[]
 
   #element
   #titleElement
@@ -45,8 +46,8 @@ class Parameters {
     this.#element.appendChild(this.#listElement)
   }
 
-  loadData(data: ParameterValuesList) {
-    this.#parameters = data.map(d => new Parameter(d))
+  loadData(data: Parameter[]) {
+    this.#parameters = data.map(d => new AppParameter(d))
     this.#updateElement()
   }
   #updateElement() {
@@ -59,17 +60,9 @@ class Parameters {
   get element() {
     return this.#element
   }
-  get value(): ParameterValuesList {
+  get value(): Parameter[] {
     return this.#parameters.map(c => {
-      return {
-        name: c.value.name,
-        in: c.value.in,
-        type: c.value.type,
-        min: c.value.min,
-        max: c.value.max,
-        example: c.value.example,
-        description: c.value.description
-      }
+      return c.value
     })
   }
 }
