@@ -1,8 +1,8 @@
 import AppTextBox from "@ElementBase/textbox";
 
 class responseBodyNameText extends AppTextBox {
-  constructor(name: string) {
-    super(name)
+  constructor(value: string) {
+    super((value !== undefined) ? value : '')
   }
 }
 
