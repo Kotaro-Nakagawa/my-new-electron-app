@@ -15,6 +15,10 @@ import RequestBodyLimitMayExclusiveSelect from "./requestBodyParts/recordParts/r
 import RequestBodyExampleText from "./requestBodyParts/recordParts/requestBodyExampleText"
 import SchemaValues from "./requestBodyParts/parameterInterface"
 import { nestedElementForFoldableTable } from "@ElementBase/foldableTableParts/nestedElementForFoldableTableType"
+import Schema from "@Structure/openAPI/schema"
+import RequestBody from "@Structure/openAPI/openAPIParts/pathitemParts/operationParts/requestBody"
+import Reference from "@Structure/openAPI/openAPIParts/reference"
+import SchemaConverter from "./requestBodyParts/schemaConverter"
 
 const columns = {
   name: 1,
@@ -50,12 +54,16 @@ const keyToColumnTitle = (key: string) => {
 
 const elementId = 'request-body'
 
-class RequestBody extends AppFoldableTable<RequestBodyRecordType> {
+class AppRequestBody extends AppFoldableTable<RequestBodyRecordType> {
   constructor() {
     super(Array.from(Object.keys(columns)), Array.from(Object.values(columns)), keyToColumnTitle)
   }
-  putData(data: SchemaValues) {
-    this.appendContent(elementsFromData(data))
+  putData(data: RequestBody) {
+    if (!("content" in data)) return
+    const contents = Object.entries(data.content)
+    const firstMedia = contents[0][1]
+    const schemaValues = SchemaConverter.schemaValuesFromSchema('<root>', firstMedia.schema, true)
+    this.appendContent(elementsFromData(schemaValues))
 
     function elementsFromData(data: SchemaValues): nestedElementForFoldableTable<RequestBodyRecordType> {
       if (data.type === "object" || data.type === "array") {
@@ -95,15 +103,121 @@ class RequestBody extends AppFoldableTable<RequestBodyRecordType> {
       }
     }
   }
+  get value(): Schema {
+    const contents = this.getContents()
+    if (!('children' in contents)) return undefined
+    if (contents.children.length === 0) return undefined
+    const SchemaValues = valuesFromElement(contents.children[0])
+    return schemaFromSchemaValues(SchemaValues)
+
+    function valuesFromElement(elem: nestedElementForFoldableTable<RequestBodyRecordType>): SchemaValues {
+      console.log(elem)
+      if ('record' in elem) {
+        const record = elem.record
+        return {
+          name: record.name.value,
+          description: record.description.value,
+          required: record.required.isRequired,
+          deprecated: undefined,
+          allowEmptyValue: undefined,
+          type: jsonTypeFromString(record.type.value),
+          format: record.format.value,
+          enum: record.enum.value,
+          pattern: record.pattern.value,
+          min: record.min.minNumber,
+          max: record.max.maxNumber,
+          isMinExclusive: record.isMinExclusive.isExclusive,
+          isMaxExclusive: record.isMaxExclusive.isExclusive,
+          example: record.example.value,
+          children: undefined
+        }
+      } else {
+        const record = elem.subroot
+        const children = elem.children
+        return {
+          name: record.name.value,
+          description: record.description.value,
+          required: record.required.isRequired,
+          deprecated: undefined,
+          allowEmptyValue: undefined,
+          type: jsonTypeFromString(record.type.value),
+          format: record.format.value,
+          enum: record.enum.value,
+          pattern: record.pattern.value,
+          min: record.min.minNumber,
+          max: record.max.maxNumber,
+          isMinExclusive: record.isMinExclusive.isExclusive,
+          isMaxExclusive: record.isMaxExclusive.isExclusive,
+          example: record.example.value,
+          children: children.map(c => valuesFromElement(c))
+        }
+      }
+
+      function jsonTypeFromString(str: string): JsonType {
+        if (str === 'string') return str
+        if (str === 'number') return str
+        if (str === 'boolean') return str
+        if (str === 'object') return str
+        if (str === 'integer') return str
+        if (str === 'array') return str
+        if (str === 'null') return str
+        return undefined
+      }
+    }
+
+    function schemaFromSchemaValues(schemaValues: SchemaValues): Schema {
+      const schema: Schema = {
+        description: schemaValues.description,
+        type: schemaValues.type,
+        format: schemaValues.format,
+        enum: schemaValues.enum,
+        pattern: schemaValues.pattern,
+        exclusiveMinimum: schemaValues.isMinExclusive ? schemaValues.min : undefined,
+        minimum: schemaValues.isMinExclusive ? undefined : schemaValues.min,
+        exclusiveMaximum: schemaValues.isMaxExclusive ? schemaValues.max : undefined,
+        maximum: schemaValues.isMaxExclusive ? undefined : schemaValues.max,
+        minlength: schemaValues.min,
+        maxlength: schemaValues.max,
+        examples: schemaValues.example ? schemaValues.example.split('\n') : undefined,
+        properties: {},
+        required: [],
+        default: schemaValues.example ? schemaValues.example.split('\n')[0] : '',
+      };
+
+      if (schemaValues.children) {
+        schema.properties = {};
+        schemaValues.children.forEach(child => {
+          schema.properties[child.name] = schemaFromSchemaValues(child);
+          if (child.required) {
+            schema.required.push(child.name);
+          }
+        });
+      }
+
+      return schema;
+    }
+  }
 }
 
-class RequestBodySection extends AppSection<RequestBody> {
+class RequestBodySection extends AppSection<AppRequestBody> {
   constructor() {
-    super('Request Body', new RequestBody())
+    super('Request Body', new AppRequestBody())
     this.element.id = elementId
   }
-  loadData(data: BodySchema) {
-    this.content.putData(data)
+  loadData(data: RequestBody | Reference) {
+    if ('content' in data) {
+      this.content.putData(data)
+    }
+  }
+  get value(): RequestBody {
+    const schema = this.content.value
+    if (schema === undefined) return undefined
+    return {
+      description: '',
+      content: {
+        'application/json': { schema: schema }
+      }
+    }
   }
 }
 

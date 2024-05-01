@@ -1,3 +1,4 @@
+import Parameter from "@Structure/openAPI/openAPIParts/pathitemParts/parameter"
 import ParameterValues from "./parameterInterface"
 import ParameterDescriptionItem from "./parameterParts/parameterDescriptionItem"
 import ParameterExampleItem from "./parameterParts/parameterExampleItem"
@@ -17,7 +18,7 @@ const element = () => {
   return ret
 }
 
-class Parameter {
+class AppParameter {
   #values
   #name
   #in
@@ -30,17 +31,19 @@ class Parameter {
 
   #element
 
-  constructor(values: ParameterValues) {
+  constructor(values: Parameter) {
     console.log(values)
     this.#values = values // 画面に表示されない情報はいったんここに格納
     // 本当は type に応じて編集可否を決めないといけないのか面倒だな
     // 全部編集可能にして alert を出す形のほうが良いかも知れない。いずれにしてもここで判定して item に挙動を教えないとダメ
+    if (!values.schema) values.schema = { type: 'string', default: '' }
+    const valuesType = typeof values.schema.type === 'object' ? values.schema.type[0] : values.schema.type
     this.#name = new ParameterNameItem(values.name)
     this.#in = new ParameterInItem(values.in)
-    this.#type = new ParameterTypeItem(values.type)
-    this.#min = new ParameterMinItem(values.min)
-    this.#valueorlength = new ParameterValueOrLengthItem(values.type === "string" ? "length" : "value")
-    this.#max = new ParameterMaxItem(values.max)
+    this.#type = new ParameterTypeItem(valuesType)
+    this.#min = new ParameterMinItem(valuesType === 'string' ? values.schema.minlength : values.schema.minimum)
+    this.#valueorlength = new ParameterValueOrLengthItem(valuesType === "string" ? "length" : "value")
+    this.#max = new ParameterMaxItem(valuesType === 'string' ? values.schema.maxlength : values.schema.maximum)
     this.#example = new ParameterExampleItem(values.example)
     this.#description = new ParameterDescriptionItem(values.description)
 
@@ -58,6 +61,44 @@ class Parameter {
   get element() {
     return this.#element
   }
+
+  get value(): Parameter {
+    this.#values.name = this.#name.element.innerText
+    this.#values.in = inFromText(this.#in.element.innerText) // ちゃんと inTextBox 型を作るべき
+    this.#values.schema.type = typeFromText(this.#type.element.innerText)
+    if (this.#values.schema.type === "string") {
+      this.#values.schema.minlength = numberFromText(this.#min.element.innerText)
+      this.#values.schema.maxlength = numberFromText(this.#max.element.innerText)
+    } else {
+      this.#values.schema.minimum = numberFromText(this.#min.element.innerText)
+      this.#values.schema.maximum = numberFromText(this.#min.element.innerText)
+    }
+    this.#values.example = this.#example.element.innerText
+    this.#values.description = this.#example.element.innerText
+    return this.#values
+
+    function inFromText(text: string): "query" | "header" | "path" | "cookie" {
+      if (text === "query") return text
+      if (text === "header") return text
+      if (text === "path") return text
+      if (text === "cookie") return text
+      return undefined
+    }
+
+    function typeFromText(text: string): "string" | "number" | "boolean" | "integer" {
+      if (text === "string") return text
+      if (text === "number") return text
+      if (text === "boolean") return text
+      if (text === "integer") return text
+      return undefined
+    }
+
+    function numberFromText(text: string): number {
+      const number = Number.parseFloat(text)
+      if (isNaN(number)) return undefined
+      return number
+    }
+  }
 }
 
-export default Parameter
+export default AppParameter

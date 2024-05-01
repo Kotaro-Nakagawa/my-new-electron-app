@@ -7,11 +7,13 @@ const element = () => {
 }
 
 class NumberBox extends AppElement {
-  #value
   constructor(initialValue: number) {
     super(element())
-    this.#value = initialValue
-    this.element.innerText = this.#value ? this.#value.toString() : ''
+    this.element.innerText = initialValue ? initialValue.toString() : ''
+  }
+  get value() {
+    const value = Number.parseFloat(this.element.innerText)
+    return isNaN(value) ? undefined : value
   }
 }
 

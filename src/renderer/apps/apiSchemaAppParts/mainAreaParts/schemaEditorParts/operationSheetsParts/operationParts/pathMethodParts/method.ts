@@ -17,6 +17,9 @@ class Method {
   setValue(value: string) {
     this.#element.innerText = value
   }
+  get value(): string {
+    return this.#element.innerText
+  }
 }
 
 export default Method

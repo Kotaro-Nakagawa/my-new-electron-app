@@ -14,20 +14,34 @@ const element = () => {
 class OperationSheets extends AppElement {
   #tabs
   #currentPathIndex
-  #currentMethod
+  #currentMethod: string
   #operation
   #data: OperationSheetsData
 
   constructor() {
     super(element())
     this.#currentPathIndex = 0
-    this.#currentMethod = 'get'
+    this.#currentMethod = undefined
     this.#tabs = new OperationSheetTabs((method) => {
       this.changeCurrentMethod(method)
     })
     this.#operation = new OperationSheetMain()
     this.element.appendChild(this.#tabs.element)
     this.element.appendChild(this.#operation.element)
+  }
+  saveCurrent() {
+    console.log('↓ savecurrent')
+    const currentPath = this.#data.reduce((agg: string[], cur) => {
+      if (!agg.includes(cur.path)) agg.push(cur.path)
+      return agg
+    }, [])[this.#currentPathIndex]
+    // const operationsWithCurrentPath = this.#data.filter(d => d.path === currentPath)
+    const currentMethodIndex = this.#data.findIndex(o => o.path === currentPath && o.method === this.#currentMethod)
+    console.log(this.#data[currentMethodIndex])
+    console.log('  update current')
+    this.#data[currentMethodIndex] = this.#operation.value
+    console.log(this.#data[currentMethodIndex])
+    console.log('↑ savecurrent')
   }
   loadData(data: OperationSheetsData) {
     this.#data = data
@@ -49,12 +63,15 @@ class OperationSheets extends AppElement {
     }
   }
   changeCurrentMethod(method: string) {
+    console.log(`currentMethod is ${this.#currentMethod}`)
+    if (this.#currentMethod !== undefined) this.saveCurrent()
     const currentPath = this.#data.reduce((agg: string[], cur) => {
       if (!agg.includes(cur.path)) agg.push(cur.path)
       return agg
     }, [])[this.#currentPathIndex]
     const operationsWithCurrentPath = this.#data.filter(d => d.path === currentPath)
     this.#operation.loadData(operationsWithCurrentPath.find(o => o.method === method))
+    this.#currentMethod = method
   }
   updatePathValue(newPath: string, index: number) {
     const paths: string[] = this.#data.reduce((agg: string[], cur) => {
@@ -69,6 +86,10 @@ class OperationSheets extends AppElement {
     }
   }
   get data(): OperationSheetsData {
+    this.saveCurrent()
+    console.log('↓ save this data')
+    console.log(this.#data)
+    console.log('↑ save this data')
     return this.#data
   }
 }

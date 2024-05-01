@@ -57,6 +57,15 @@ class AppFoldableTable<T extends { [key: string]: AppElement }> extends AppEleme
     console.log(FoldableTableLineNames.getTemplate(this.#manager.getMaxDepth(), this.#columnWeights))
     this.element.style.gridTemplateColumns = FoldableTableLineNames.getTemplate(this.#manager.getMaxDepth(), this.#columnWeights)
   }
+
+  getContents(): nestedElementForFoldableTable<T> {
+    return {
+      subroot: undefined,
+      children: this.#list.getContents().map(c => {
+        return (c instanceof AppFoldableTableRecord) ? { record: c.getContents() } : c.getContents()
+      })
+    }
+  }
 }
 
 export default AppFoldableTable

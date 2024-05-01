@@ -14,6 +14,9 @@ class RequestBodyLimitMayExclusiveSelect extends AppTextBox {
   constructor(value: boolean) {
     super(valueToInequalityStr(value))
   }
+  get isExclusive(): boolean {
+    return this.value === '<'
+  }
 }
 
 export default RequestBodyLimitMayExclusiveSelect

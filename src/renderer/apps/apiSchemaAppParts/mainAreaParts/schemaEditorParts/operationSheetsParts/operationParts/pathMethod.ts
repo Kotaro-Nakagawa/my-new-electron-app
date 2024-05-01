@@ -30,6 +30,12 @@ class PathAndMethod {
     this.#method.setValue(method)
     this.#path.setValue(path)
   }
+  get value() {
+    return {
+      path: this.#path.value,
+      method: this.#method.value
+    }
+  }
 }
 
 export default PathAndMethod

@@ -70,6 +70,15 @@ class AppFoldableSubTable<T extends { [key: string]: AppElement }> extends AppEl
       this.appendSubTable(d.subroot, d.children)
     }
   }
+
+  getContents(): nestedElementForFoldableTable<T> {
+    return {
+      subroot: this.#topRecord.getContents(),
+      children: this.#list.getContents().map(c => {
+        return (c instanceof AppFoldableTableRecord) ? { record: c.getContents() } : c.getContents()
+      })
+    }
+  }
 }
 
 export default AppFoldableSubTable

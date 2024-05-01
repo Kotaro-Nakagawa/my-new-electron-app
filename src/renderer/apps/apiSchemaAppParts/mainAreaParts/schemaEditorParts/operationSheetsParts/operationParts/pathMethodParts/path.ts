@@ -17,6 +17,9 @@ class Path {
   setValue(value: string) {
     this.#element.innerText = value
   }
+  get value() {
+    return this.#element.innerText
+  }
 }
 
 export default Path
