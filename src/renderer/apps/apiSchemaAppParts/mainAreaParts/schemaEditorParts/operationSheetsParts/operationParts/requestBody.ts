@@ -210,10 +210,12 @@ class RequestBodySection extends AppSection<AppRequestBody> {
     }
   }
   get value(): RequestBody {
+    const schema = this.content.value
+    if (schema === undefined) return undefined
     return {
       description: '',
       content: {
-        'application/json': { schema: this.content.value }
+        'application/json': { schema: schema }
       }
     }
   }
