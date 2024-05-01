@@ -5,7 +5,7 @@ const schemaValuesFromSchema = (name: string, schema: Schema, required: boolean)
   const exampleToExampleStr = (example: any) => {
     if (example === undefined) return ''
     const toStrIfObject = (value: any) => {
-      if (typeof example === 'object') return JSON.stringify(value)
+      if (typeof value === 'object') return JSON.stringify(value)
       return value
     }
 
