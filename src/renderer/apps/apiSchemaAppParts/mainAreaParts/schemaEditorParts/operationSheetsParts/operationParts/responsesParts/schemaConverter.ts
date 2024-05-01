@@ -2,6 +2,17 @@ import Schema from "@Structure/openAPI/schema"
 import SchemaValues from "../requestBodyParts/parameterInterface";
 
 const schemaValuesFromSchema = (name: string, schema: Schema, required: boolean): SchemaValues => {
+  const exampleToExampleStr = (example: any) => {
+    if (example === undefined) return ''
+    const toStrIfObject = (value: any) => {
+      if (typeof example === 'object') return JSON.stringify(value)
+      return value
+    }
+
+    console.log(example)
+    if (Array.isArray(example)) return example.map(e => toStrIfObject(e)).join('\n')
+    return example
+  }
   return {
     name: name,
     description: schema.description,
@@ -14,7 +25,7 @@ const schemaValuesFromSchema = (name: string, schema: Schema, required: boolean)
     max: schema.exclusiveMaximum || schema.maximum || schema.maxlength,
     isMinExclusive: "exclusiveMinimum" in schema ? true : false,
     isMaxExclusive: "exclusiveMaximum" in schema ? true : false,
-    example: schema.examples ? schema.examples.join('\n') : '',
+    example: exampleToExampleStr(schema.examples),
     children: (() => {
       if (schema.properties) {
         return Array.from(Object.entries(schema.properties)).map(([k, v]) => {
