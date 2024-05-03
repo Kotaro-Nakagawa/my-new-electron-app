@@ -35,11 +35,6 @@ class AppFoldableTableRecord<T extends { [key: string]: AppElement }> extends Ap
     keyOrder.forEach((k, i) => {
       this.element.appendChild(boxElement(FoldableTableLineNames.getRangeOfColumn(depth, i), contents[k].element))
     })
-    // Object.entries(contents).forEach(([k, a], i) => {
-    //   const startLineName = i === 0 ? `indent-${depth}` : `column-${i}`
-    //   const endLineName = `column-${i + 1}`
-    //   this.element.appendChild(boxElement(startLineName, endLineName, a.element))
-    // })
   }
   getContent<K extends keyof T>(key: K): T[K] {
     return this.#contents[key];

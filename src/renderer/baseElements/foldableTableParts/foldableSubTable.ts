@@ -53,12 +53,6 @@ class AppFoldableSubTable<T extends { [key: string]: AppElement }> extends AppEl
     this.#list.appendContent(subTable)
     children.forEach(d => {
       subTable.appendContent(d)
-      // if ('record' in d) {
-      //   subTable.appendRecord(d.record)
-      // }
-      // if ('subroot' in d) {
-      //   subTable.appendSubTable(d.subroot, d.children)
-      // }
     })
   }
 
