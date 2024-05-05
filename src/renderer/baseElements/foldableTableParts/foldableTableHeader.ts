@@ -1,13 +1,10 @@
 import AppElement from "@ElementBase/element"
 import AppLabel from "@ElementBase/label"
-import FoldableTableLineNames from "./foldableTableLineNames"
 
 const DIV = 'div'
 
-const boxElement = (start: string, end: string, child: HTMLDivElement) => {
+const boxElement = (child: HTMLDivElement) => {
   const elem = document.createElement(DIV)
-  elem.style.gridColumnStart = start
-  elem.style.gridColumnEnd = end
   elem.appendChild(child)
   return elem
 }
@@ -15,24 +12,35 @@ const boxElement = (start: string, end: string, child: HTMLDivElement) => {
 const baseElement = () => {
   const elem = document.createElement(DIV)
   elem.style.display = 'grid'
-  elem.style.gridTemplateColumns = 'subgrid'
-  const { start, end } = FoldableTableLineNames.getFullRange()
-  elem.style.gridColumnStart = start
-  elem.style.gridColumnEnd = end
+  elem.id = 'foldable-table-header'
   return elem
 }
 
 class AppFoldableTableHeader<T = { [key: string]: AppElement }> extends AppElement {
   #contents: T
+  #foldButtonAreaElement
+  #indentElement
   constructor(keyOrder: (keyof T)[], labelStringFunc?: (key: string) => string) {
     super(baseElement())
     const contents = Object.fromEntries(keyOrder.map(k => { return [k, new AppLabel(labelStringFunc ? labelStringFunc(k as string) : k as string)] }))
 
     this.#contents = contents as unknown as T
+    this.#foldButtonAreaElement = boxElement(document.createElement(DIV))
+    this.element.appendChild(this.#foldButtonAreaElement)
+    this.#indentElement = boxElement(document.createElement(DIV))
+    this.element.appendChild(this.#indentElement)
     keyOrder.forEach((c, i) => {
-      const { start, end } = FoldableTableLineNames.getRangeOfColumn(0, i)
-      this.element.appendChild(boxElement(start, end, (this.#contents[c] as unknown as AppElement).element))
+      this.element.appendChild(boxElement((this.#contents[c] as unknown as AppElement).element))
     })
+  }
+
+  updateColumnWidth(percentages: number[], depth: number) {
+    const successor = percentages.slice(1)
+    this.setGridTemplate(`2% ${depth}% auto ${successor.join('% ')}%`)
+  }
+
+  setGridTemplate(template: string) {
+    this.element.style.gridTemplateColumns = template
   }
 }
 

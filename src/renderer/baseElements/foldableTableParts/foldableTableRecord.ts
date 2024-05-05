@@ -1,13 +1,10 @@
 import AppElement from "@ElementBase/element"
-import FoldableTableLineNames from "./foldableTableLineNames"
 import FoldableTableManager from "./foldableTableManager"
 
 const DIV = 'div'
 
-const boxElement = ({ start, end }: { start: string, end: string }, child: HTMLDivElement) => {
+const boxElement = (child: HTMLDivElement) => {
   const elem = document.createElement(DIV)
-  elem.style.gridColumnStart = start
-  elem.style.gridColumnEnd = end
   elem.appendChild(child)
   return elem
 }
@@ -15,10 +12,6 @@ const boxElement = ({ start, end }: { start: string, end: string }, child: HTMLD
 const baseElement = () => {
   const elem = document.createElement(DIV)
   elem.style.display = 'grid'
-  elem.style.gridTemplateColumns = 'subgrid'
-  const { start, end } = FoldableTableLineNames.getFullRange()
-  elem.style.gridColumnStart = start
-  elem.style.gridColumnEnd = end
   return elem
 }
 
@@ -26,14 +19,21 @@ class AppFoldableTableRecord<T extends { [key: string]: AppElement }> extends Ap
   #contents
   #keyOrder
   #manager
+
+  #foldButtonAreaElement
+  #indentElement
   constructor(contents: T, keyOrder: (keyof T)[], depth: number, manager: FoldableTableManager) {
     super(baseElement())
     this.#contents = contents
     this.#keyOrder = keyOrder
     this.#manager = manager
     this.#manager.reportNewDepth(depth)
+    this.#foldButtonAreaElement = boxElement(document.createElement(DIV))
+    this.element.appendChild(this.#foldButtonAreaElement)
+    this.#indentElement = boxElement(document.createElement(DIV))
+    this.element.appendChild(this.#indentElement)
     keyOrder.forEach((k, i) => {
-      this.element.appendChild(boxElement(FoldableTableLineNames.getRangeOfColumn(depth, i), contents[k].element))
+      this.element.appendChild(boxElement(contents[k].element))
     })
   }
   getContent<K extends keyof T>(key: K): T[K] {
@@ -41,6 +41,19 @@ class AppFoldableTableRecord<T extends { [key: string]: AppElement }> extends Ap
   }
   getContents(): T {
     return this.#contents
+  }
+
+  get maxDepth() {
+    return 1
+  }
+
+  updateColumnWidth(percentages: number[], depth: number) {
+    const successor = percentages.slice(1)
+    this.setGridTemplate(`2% ${depth}% auto ${successor.join('% ')}%`)
+  }
+
+  setGridTemplate(template: string) {
+    this.element.style.gridTemplateColumns = template
   }
 }
 

@@ -3,7 +3,6 @@ import AppFoldableTableRecordList from "./foldableTableRecordList"
 import AppFoldableTableRecord from "./foldableTableRecord"
 import { nestedElementForFoldableTable } from "./nestedElementForFoldableTableType"
 import FoldableTableManager from "./foldableTableManager"
-import FoldableTableLineNames from "./foldableTableLineNames"
 
 const DIV = 'div'
 const INDENT_SIZE = 8
@@ -11,11 +10,6 @@ const FOLDING_BUTTON_AREA_SIZE = 16
 
 const baseElement = () => {
   const elem = document.createElement(DIV)
-  elem.style.display = 'grid'
-  elem.style.gridTemplateColumns = 'subgrid'
-  const { start, end } = FoldableTableLineNames.getFullRange()
-  elem.style.gridColumnStart = start
-  elem.style.gridColumnEnd = end
   return elem
 }
 
@@ -72,6 +66,15 @@ class AppFoldableSubTable<T extends { [key: string]: AppElement }> extends AppEl
         return (c instanceof AppFoldableTableRecord) ? { record: c.getContents() } : c.getContents()
       })
     }
+  }
+
+  get maxDepth(): number {
+    return this.#list.maxDepth + 1
+  }
+
+  updateColumnWidth(percentages: number[], depth: number) {
+    this.#list.updateColumnWidth(percentages, depth)
+    this.#topRecord.updateColumnWidth(percentages, depth)
   }
 }
 
