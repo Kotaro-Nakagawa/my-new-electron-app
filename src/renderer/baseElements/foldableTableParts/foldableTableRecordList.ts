@@ -1,17 +1,11 @@
 import AppElement from "@ElementBase/element"
 import AppFoldableSubTable from "./foldableSubTable"
 import AppFoldableTableRecord from "./foldableTableRecord"
-import FoldableTableLineNames from "./foldableTableLineNames"
 
 const DIV = 'div'
 
 const baseElement = () => {
   const elem = document.createElement(DIV)
-  elem.style.display = 'grid'
-  elem.style.gridTemplateColumns = 'subgrid'
-  const { start, end } = FoldableTableLineNames.getFullRange()
-  elem.style.gridColumnStart = start
-  elem.style.gridColumnEnd = end
   return elem
 }
 
@@ -33,6 +27,14 @@ class AppFoldableTableRecordList<T extends { [key: string]: AppElement }> extend
 
   getContents(): (AppFoldableTableRecord<T> | AppFoldableSubTable<T>)[] {
     return this.#contents
+  }
+
+  get maxDepth(): number {
+    return Math.max(...this.#contents.map(c => c.maxDepth), 0)
+  }
+
+  updateColumnWidth(percentages: number[], depth: number) {
+    this.#contents.forEach(c => c.updateColumnWidth(percentages, depth + 1))
   }
 }
 

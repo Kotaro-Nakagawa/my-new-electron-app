@@ -1,7 +1,6 @@
 import AppElement from "./element";
 import AppFoldableSubTable from "./foldableTableParts/foldableSubTable";
 import AppFoldableTableHeader from "./foldableTableParts/foldableTableHeader";
-import FoldableTableLineNames from "./foldableTableParts/foldableTableLineNames";
 import FoldableTableManager from "./foldableTableParts/foldableTableManager";
 import AppFoldableTableRecord from "./foldableTableParts/foldableTableRecord";
 import AppFoldableTableRecordList from "./foldableTableParts/foldableTableRecordList";
@@ -14,6 +13,18 @@ const baseElement = () => {
   elem.style.display = 'grid'
   elem.id = 'for-debug'
   return elem
+}
+
+const columnsWidthFromWeights = (columnWeights: number[], maxDepth: number) => {
+  const foldAreaPercentage = 2
+  const indentPercentage = 1
+  const totalWeight = columnWeights.reduce((ttl, val) => ttl + val, 0)
+  const sideAreaPercentage = foldAreaPercentage + maxDepth * indentPercentage
+  const mainAreaPercentage = 100 - sideAreaPercentage
+  const columnPercentages = columnWeights.map(c => Math.round(c * mainAreaPercentage / totalWeight))
+  const roundingError = mainAreaPercentage - columnPercentages.reduce((sum, val) => sum + val, 0)
+  columnPercentages[0] += roundingError
+  return columnPercentages
 }
 
 class AppFoldableTable<T extends { [key: string]: AppElement }> extends AppElement {
@@ -29,7 +40,7 @@ class AppFoldableTable<T extends { [key: string]: AppElement }> extends AppEleme
     this.#list = new AppFoldableTableRecordList<T>([])
     this.#keyOrder = keyOrder
     this.#columnWeights = columnWeights
-    this.element.style.gridTemplateColumns = FoldableTableLineNames.getTemplate(0, columnWeights)
+    this.updateColumnWidth()
     this.element.appendChild(this.#header.element)
     this.element.appendChild(this.#list.element)
   }
@@ -54,8 +65,7 @@ class AppFoldableTable<T extends { [key: string]: AppElement }> extends AppEleme
     if ('subroot' in d) {
       this.#appendSubTable(d.subroot, d.children)
     }
-    console.log(FoldableTableLineNames.getTemplate(this.#manager.getMaxDepth(), this.#columnWeights))
-    this.element.style.gridTemplateColumns = FoldableTableLineNames.getTemplate(this.#manager.getMaxDepth(), this.#columnWeights)
+    this.updateColumnWidth()
   }
 
   getContents(): nestedElementForFoldableTable<T> {
@@ -65,6 +75,17 @@ class AppFoldableTable<T extends { [key: string]: AppElement }> extends AppEleme
         return (c instanceof AppFoldableTableRecord) ? { record: c.getContents() } : c.getContents()
       })
     }
+  }
+
+  get maxDepth() {
+    return this.#list.maxDepth
+  }
+
+  updateColumnWidth() {
+    const maxDepth = this.maxDepth
+    const percentages = columnsWidthFromWeights(this.#columnWeights, maxDepth)
+    this.#list.updateColumnWidth(percentages, 0)
+    this.#header.updateColumnWidth(percentages, 0)
   }
 }
 
