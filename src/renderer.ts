@@ -33,7 +33,6 @@ import Dock from './renderer/main';
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
 window.onload = () => {
-  // const mainApp = new ApiSchemaApp()
   const mainApp = new Dock(window.APISchemaService)
   const mainElement = document.getElementById('main')
   mainElement.appendChild(mainApp.element)

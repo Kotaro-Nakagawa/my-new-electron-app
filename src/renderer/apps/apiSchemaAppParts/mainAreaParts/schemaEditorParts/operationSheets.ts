@@ -35,7 +35,6 @@ class OperationSheets extends AppElement {
       if (!agg.includes(cur.path)) agg.push(cur.path)
       return agg
     }, [])[this.#currentPathIndex]
-    // const operationsWithCurrentPath = this.#data.filter(d => d.path === currentPath)
     const currentMethodIndex = this.#data.findIndex(o => o.path === currentPath && o.method === this.#currentMethod)
     console.log(this.#data[currentMethodIndex])
     console.log('  update current')

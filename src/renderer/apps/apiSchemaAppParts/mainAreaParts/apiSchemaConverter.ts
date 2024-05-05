@@ -117,8 +117,6 @@ const parametersJsonFromSchema = (parameters: (Parameter | Reference)[]): Parame
 const requestBodyJsonFromSchema = (body: RequestBody | Reference): SchemaValues => {
   if (!("content" in body)) return undefined
   const contents = Object.entries(body.content)
-  // const [firstMediaKey] = body.content.keys()
-  // const firstMedia = body.content.get(firstMediaKey)
   const firstMedia = contents[0][1]
   return schemaValuesFromSchema('<root>', firstMedia.schema, true)
 }

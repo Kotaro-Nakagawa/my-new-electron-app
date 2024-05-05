@@ -5,15 +5,6 @@ import KeyValueList from "./keyValueList";
 
 const DIV = 'div'
 
-// const keyElement = () => {
-//   return document.createElement(DIV)
-// }
-// const valueElement = () => {
-//   const element = document.createElement(DIV)
-//   element.contentEditable = 'ture'
-//   return element
-// }
-
 const baseElement = () => {
   const element = document.createElement(DIV)
   element.style.display = 'grid'
