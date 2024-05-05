@@ -9,7 +9,6 @@ const schemaValuesFromSchema = (name: string, schema: Schema, required: boolean)
       return value
     }
 
-    console.log(example)
     if (Array.isArray(example)) return example.map(e => toStrIfObject(e)).join('\n')
     return example
   }
